@@ -1,11 +1,7 @@
-"use client";
-
-import { useState } from "react";
-import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function Courses() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const courses = [
     {
       id: 1,
@@ -79,66 +75,7 @@ export default function Courses() {
 
   return (
     <div className="bg-black text-white min-h-screen">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-8">
-              <Link href="/" className="text-2xl font-bold">
-                <span className="text-white">FORGE</span>
-              </Link>
-              <Link href="/" className="hidden md:block text-gray-300 hover:text-white transition-colors">
-                Hub
-              </Link>
-              <Link href="/academy" className="hidden md:block text-gray-300 hover:text-white transition-colors">
-                Academy
-              </Link>
-              <Link href="/courses" className="hidden md:block text-white transition-colors">
-                Courses
-              </Link>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-4">
-              <button className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors">
-                Enroll Now
-              </button>
-              <button className="px-6 py-2.5 border border-white/30 rounded-full hover:bg-white/10 transition-colors">
-                View Schedule
-              </button>
-            </div>
-
-            {/* Mobile menu button */}
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden text-white"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-
-          {/* Mobile menu */}
-          {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-white/10">
-              <Link href="/" className="block py-2 text-gray-300 hover:text-white transition-colors">Hub</Link>
-              <Link href="/academy" className="block py-2 text-gray-300 hover:text-white transition-colors">Academy</Link>
-              <Link href="/courses" className="block py-2 text-white transition-colors">Courses</Link>
-              <button className="w-full mt-2 px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors">
-                Enroll Now
-              </button>
-              <button className="w-full mt-2 px-6 py-2.5 border border-white/30 rounded-full hover:bg-white/10 transition-colors">
-                View Schedule
-              </button>
-            </div>
-          )}
-        </div>
-      </nav>
+      <Header activePage="courses" />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
@@ -325,44 +262,7 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <p className="text-2xl font-bold text-white mb-4">FORGE</p>
-              <p className="text-sm text-gray-500">Where developers build together.</p>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Hub</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li><Link href="/" className="hover:text-white transition-colors">Workspace</Link></li>
-                <li><Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="/#tour" className="hover:text-white transition-colors">Book Tour</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Learn</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li><Link href="/academy" className="hover:text-white transition-colors">Academy</Link></li>
-                <li><Link href="/courses" className="hover:text-white transition-colors">Courses</Link></li>
-                <li><Link href="/academy" className="hover:text-white transition-colors">Apply</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Connect</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="text-center pt-8 border-t border-white/10">
-            <p className="text-sm text-gray-500">© 2025 Forge. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
