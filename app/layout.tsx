@@ -9,12 +9,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Forge Academy - Where Failure is Mandatory",
-  description: "Real teams. Real clients. Real equity. The only academy where you run real companies and earn equity as you learn.",
-  keywords: ["startup academy", "entrepreneurship", "business education", "equity learning", "real companies"],
+  title: "Forge - Tech Hub & Startup Academy",
+  description: "Premium workspace for developers and startup academy where failure is mandatory. Join our tech community today.",
+  keywords: ["coworking space", "tech hub", "developer workspace", "startup academy", "entrepreneurship", "private offices"],
   openGraph: {
-    title: "The Forge Academy - Where Failure is Mandatory",
-    description: "Real teams. Real clients. Real equity.",
+    title: "Forge - Where Developers Build Together",
+    description: "Premium workspace and startup academy for the tech community.",
     type: "website",
   },
 };

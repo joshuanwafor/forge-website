@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,21 +13,24 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-8">
-              <div className="text-2xl font-bold">
+              <Link href="/" className="text-2xl font-bold">
                 <span className="text-white">FORGE</span>
-              </div>
-              <a href="#about" className="hidden md:block text-gray-300 hover:text-white transition-colors">
-                Founder's Journey
-              </a>
+              </Link>
+              <Link href="/" className="hidden md:block text-white transition-colors">
+                Hub
+              </Link>
+              <Link href="/academy" className="hidden md:block text-gray-300 hover:text-white transition-colors">
+                Academy
+              </Link>
             </div>
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-4">
               <button className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors">
-                Apply
+                Book a Tour
               </button>
               <button className="px-6 py-2.5 border border-white/30 rounded-full hover:bg-white/10 transition-colors">
-                Join Waitlist
+                Membership
               </button>
             </div>
 
@@ -48,12 +52,13 @@ export default function Home() {
           {/* Mobile menu */}
           {isMenuOpen && (
             <div className="md:hidden py-4 border-t border-white/10">
-              <a href="#about" className="block py-2 text-gray-300 hover:text-white transition-colors">Founder's Journey</a>
+              <Link href="/" className="block py-2 text-white transition-colors">Hub</Link>
+              <Link href="/academy" className="block py-2 text-gray-300 hover:text-white transition-colors">Academy</Link>
               <button className="w-full mt-2 px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors">
-                Apply
+                Book a Tour
               </button>
               <button className="w-full mt-2 px-6 py-2.5 border border-white/30 rounded-full hover:bg-white/10 transition-colors">
-                Join Waitlist
+                Membership
               </button>
             </div>
           )}
@@ -64,64 +69,64 @@ export default function Home() {
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-8 inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm">
-            Founder's Journey
+            Tech Hub & Workspace
           </div>
           
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-            The Only Academy Where
+            Where Developers
           </h1>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-12 leading-tight bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-            Failure
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-12 leading-tight bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+            Build
           </h1>
           
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-12 leading-tight">
-            is Mandatory
+            Together
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
-            Real teams. Real clients. Real equity.
+            Premium workspace. Private offices. Unlimited coffee.
           </p>
           
           <div className="mb-12">
-            <p className="text-lg text-gray-500 mb-4">We Make You Know</p>
+            <p className="text-lg text-gray-500 mb-4">Code in Community</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-lg">
-              Apply
+              Book a Tour
             </button>
             <button className="px-8 py-4 border border-white/30 rounded-full hover:bg-white/10 transition-all text-lg">
-              Join Waitlist
+              View Plans
             </button>
           </div>
         </div>
       </section>
 
-      {/* What We Do Section */}
+      {/* What We Offer Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/10">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">WHAT WE DO</p>
+            <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">WHAT WE OFFER</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 max-w-5xl mx-auto">
-              Revolutionary approach where theory meets practice in the most demanding environments.
+              Everything you need to build your next big thing.
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
-              { num: "01", title: "Run Real Companies", desc: "Not case studies — you'll lead real projects with real stakes like you're the CEO" },
-              { num: "02", title: "Earn Equity as You Learn", desc: "Get actual ownership in the companies you help build" },
-              { num: "03", title: "Switch Roles Weekly", desc: "Experience every aspect of running a startup" },
-              { num: "04", title: "Get Mentored by Founders", desc: "Learn directly from those who've built successful companies" },
-              { num: "05", title: "Track Progress Like a Game", desc: "Gamified learning with real-world achievements" }
+              { num: "01", title: "Private Offices", desc: "Dedicated spaces for your team with 24/7 access and custom setups" },
+              { num: "02", title: "Hot Desks", desc: "Flexible workspace solutions perfect for freelancers and remote workers" },
+              { num: "03", title: "Meeting Rooms", desc: "Professional spaces equipped with latest tech for your client calls" },
+              { num: "04", title: "High-Speed Internet", desc: "Gigabit fiber connections designed for developers who can't wait" },
+              { num: "05", title: "Community Events", desc: "Regular tech talks, hackathons, and networking sessions" }
             ].map((item, idx) => (
               <div 
                 key={idx} 
                 className="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group cursor-pointer"
               >
                 <div className="text-gray-500 text-sm mb-4">{item.num}</div>
-                <h3 className="text-xl font-bold mb-3 group-hover:text-orange-500 transition-colors">
+                <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-500 transition-colors">
                   {item.title}
                 </h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
@@ -131,7 +136,7 @@ export default function Home() {
 
           <div className="text-center mt-12">
             <button className="px-8 py-4 bg-white/5 border border-white/20 rounded-full hover:bg-white/10 transition-all text-lg">
-              Experience the Future
+              Explore Spaces
             </button>
           </div>
         </div>
@@ -143,7 +148,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">WHO IT'S FOR</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-              Elite pathways designed for those who demand excellence<br />and refuse to settle for conventional learning experiences.
+              Built for developers, designers, and makers who need more than just a desk.
             </h2>
           </div>
 
@@ -151,35 +156,35 @@ export default function Home() {
             {[
               { 
                 num: "01",
-                badge: "Academic Excellence Redefined",
-                title: "Students tired of theory",
-                points: ["Hands-on experience", "Real startup environments"]
+                badge: "Solo Developers",
+                title: "Freelance & Remote",
+                points: ["Escape home distractions", "Professional workspace"]
               },
               { 
                 num: "02",
-                badge: "Vision Meets Execution",
-                title: "Aspiring entrepreneurs",
-                points: ["Build without risking money", "Learn by doing"]
+                badge: "Startup Teams",
+                title: "Growing Companies",
+                points: ["Scalable office spaces", "Flexible lease terms"]
               },
               { 
                 num: "03",
-                badge: "Innovation Without Limits",
-                title: "Creators & hustlers",
-                points: ["Explore startup roles", "Expand your expertise"]
+                badge: "Tech Nomads",
+                title: "On-the-Go Coders",
+                points: ["Day passes available", "Global network access"]
               },
               { 
                 num: "04",
-                badge: "Performance Over Theory",
-                title: "Action-based learners",
-                points: ["Learn by doing", "Immersive approach"]
+                badge: "Creative Studios",
+                title: "Design & Dev Teams",
+                points: ["Collaborative spaces", "High-spec equipment"]
               }
             ].map((item, idx) => (
               <div 
                 key={idx} 
-                className="p-8 bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-2xl hover:border-orange-500/50 transition-all group"
+                className="p-8 bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-2xl hover:border-cyan-500/50 transition-all group"
               >
                 <div className="text-gray-500 text-sm mb-6">{item.num}</div>
-                <div className="mb-4 text-xs uppercase tracking-wider text-orange-500">
+                <div className="mb-4 text-xs uppercase tracking-wider text-cyan-500">
                   {item.badge}
                 </div>
                 <h3 className="text-2xl font-bold mb-6">{item.title}</h3>
@@ -197,7 +202,7 @@ export default function Home() {
 
           <div className="text-center mt-12">
             <button className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-lg">
-              Begin Assessment
+              Find Your Plan
             </button>
           </div>
         </div>
@@ -208,61 +213,79 @@ export default function Home() {
         <div className="flex whitespace-nowrap animate-marquee">
           {[...Array(10)].map((_, i) => (
             <span key={i} className="text-2xl font-bold mx-8 text-white/20">
-              How It Works ✦
+              Membership Plans ✦
             </span>
           ))}
         </div>
       </div>
 
-      {/* How It Works Section */}
+      {/* Pricing Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Real <span className="italic">Business.</span>
+              Simple <span className="italic">Pricing.</span>
             </h2>
           </div>
 
-          <div className="space-y-12">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               {
-                step: "Step 1",
-                title: "Choose Your Business Niche",
-                desc: "Browse live startup models inside the academy and join the one that aligns with your interests."
+                name: "Day Pass",
+                price: "₦5,000",
+                period: "/day",
+                desc: "Perfect for trying out the space",
+                features: ["Hot desk access", "High-speed WiFi", "Coffee & snacks", "Meeting room (2hrs)"],
+                highlight: false
               },
               {
-                step: "Step 2",
-                title: "Knowledge Grill",
-                desc: "Before you take action, you'll go through a 3-day crash course—just enough to start confidently, not endlessly."
+                name: "Monthly",
+                price: "₦75,000",
+                period: "/month",
+                desc: "Best for freelancers & remote workers",
+                features: ["Dedicated desk", "24/7 access", "Unlimited coffee", "Meeting rooms", "Mail handling", "Community events"],
+                highlight: true
               },
               {
-                step: "Step 3",
-                title: "Execute in Real-Time",
-                desc: "Start managing the business: handle real tasks, join client meetings, and work like a startup team member."
-              },
-              {
-                step: "Step 4",
-                title: "Weekly Role Rotations",
-                desc: "Every 7 days, you'll switch your role. Marketing this week, sales the next, and operations after that."
-              },
-              {
-                step: "Step 5",
-                title: "You Become an Experienced Business Owner",
-                desc: "You walk away with equity ownership in a real company and practical experience across departments."
+                name: "Private Office",
+                price: "Custom",
+                period: "",
+                desc: "For teams that need privacy",
+                features: ["Your own office", "Custom setup", "Team lockers", "Priority booking", "Dedicated parking", "Premium support"],
+                highlight: false
               }
-            ].map((item, idx) => (
+            ].map((plan, idx) => (
               <div 
                 key={idx}
-                className="grid md:grid-cols-2 gap-8 items-center p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all"
+                className={`p-8 rounded-3xl border transition-all ${
+                  plan.highlight 
+                    ? 'bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/50 scale-105' 
+                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                }`}
               >
-                <div>
-                  <div className="text-sm text-orange-500 mb-4">{item.step}</div>
-                  <h3 className="text-3xl font-bold mb-4">{item.title}</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed">{item.desc}</p>
+                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                <p className="text-gray-400 text-sm mb-6">{plan.desc}</p>
+                <div className="mb-8">
+                  <span className="text-5xl font-bold">{plan.price}</span>
+                  <span className="text-gray-400">{plan.period}</span>
                 </div>
-                <div className="h-64 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl flex items-center justify-center border border-white/10">
-                  <span className="text-6xl font-bold text-white/10">{idx + 1}</span>
-                </div>
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-start text-gray-300">
+                      <svg className="w-5 h-5 mr-2 mt-0.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button className={`w-full py-3 rounded-full font-semibold transition-all ${
+                  plan.highlight
+                    ? 'bg-white text-black hover:bg-gray-200'
+                    : 'bg-white/10 hover:bg-white/20'
+                }`}>
+                  {plan.price === "Custom" ? "Contact Us" : "Get Started"}
+                </button>
               </div>
             ))}
           </div>
@@ -272,52 +295,83 @@ export default function Home() {
       {/* Final CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/10">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-8 inline-block px-4 py-2 bg-orange-500/20 border border-orange-500/30 rounded-full text-sm text-orange-500">
-            Exclusive Invitation
+          <div className="mb-8 inline-block px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-sm text-cyan-500">
+            Visit Us Today
           </div>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            You've Been <span className="italic bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Selected</span>
+            Ready to <span className="italic bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">Join?</span>
           </h2>
           
           <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
-            The academy identifies and cultivates exceptional talent. Those prepared to commit, persist through adversity, and build lasting value.
+            Visit our space, meet the community, and see why developers love working at Forge Hub.
           </p>
 
           <button className="px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl mb-8">
-            APPLY NOW
+            BOOK A TOUR
           </button>
 
           <div className="grid md:grid-cols-2 gap-4 mb-8 max-w-xl mx-auto">
             <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
-              <div className="text-sm text-gray-500 mb-1">Application Status</div>
-              <div className="text-2xl font-bold text-green-500">OPEN</div>
+              <div className="text-sm text-gray-500 mb-1">Available Desks</div>
+              <div className="text-2xl font-bold text-green-500">15+</div>
             </div>
             <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
-              <div className="text-sm text-gray-500 mb-1">Capacity</div>
-              <div className="text-2xl font-bold text-orange-500">LIMITED</div>
+              <div className="text-sm text-gray-500 mb-1">Opening Hours</div>
+              <div className="text-2xl font-bold text-cyan-500">24/7</div>
             </div>
           </div>
 
           <p className="text-gray-500 mb-2">
-            Contact: <a href="mailto:support@theforgeacademy.in" className="text-white hover:text-orange-500 transition-colors">support@theforgeacademy.in</a>
+            Contact: <a href="mailto:hello@forgehub.in" className="text-white hover:text-cyan-500 transition-colors">hello@forgehub.in</a>
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-            <span>Commitment required</span>
+            <span>Premium workspace</span>
             <span>•</span>
-            <span>Results guaranteed</span>
+            <span>Tech community</span>
             <span>•</span>
-            <span>Elite network access</span>
+            <span>Central location</span>
           </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-white/10">
-        <div className="max-w-7xl mx-auto text-center text-gray-500">
-          <p className="text-2xl font-bold text-white mb-4">FORGE</p>
-          <p className="text-sm">© 2025 The Forge Academy. All rights reserved.</p>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <p className="text-2xl font-bold text-white mb-4">FORGE</p>
+              <p className="text-sm text-gray-500">Where developers build together.</p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Hub</h4>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li><Link href="/" className="hover:text-white transition-colors">Workspace</Link></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#tour" className="hover:text-white transition-colors">Book Tour</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Academy</h4>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li><Link href="/academy" className="hover:text-white transition-colors">Programs</Link></li>
+                <li><Link href="/academy" className="hover:text-white transition-colors">Apply</Link></li>
+                <li><Link href="/academy" className="hover:text-white transition-colors">Join Waitlist</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Connect</h4>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="text-center pt-8 border-t border-white/10">
+            <p className="text-sm text-gray-500">© 2025 Forge. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
