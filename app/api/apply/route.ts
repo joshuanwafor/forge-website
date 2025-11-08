@@ -4,20 +4,18 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { 
-      fullName, 
-      age, 
-      email, 
-      phone, 
-      challenge, 
-      hasCourse, 
-      skills, 
-      equity, 
-      likelihood, 
-      likelihoodReason 
+      fullName,
+      location,
+      gender,
+      phone,
+      email,
+      courseOfInterest,
+      whyInterested,
+      availability
     } = body;
 
     // Validate required fields
-    if (!fullName || !age || !email || !challenge || !hasCourse || !skills || !equity) {
+    if (!fullName || !location || !gender || !phone || !email || !courseOfInterest || !whyInterested || !availability) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -38,16 +36,14 @@ export async function POST(request: NextRequest) {
       'Contact Email': email,
       'First Name': fullName.split(' ')[0] || fullName,
       'Last Name': fullName.split(' ').slice(1).join(' ') || '',
-      'Phone': phone || '',
-      'Age': age,
-      'Challenge': challenge,
-      'Has Course': hasCourse,
-      'Desired Skills': skills,
-      'Equity Interest': equity,
-      'Investment Likelihood': likelihood.toString(),
-      'Likelihood Reason': likelihoodReason || '',
+      'Phone': phone,
+      'Location': location,
+      'Gender': gender,
+      'Course of Interest': courseOfInterest,
+      'Why Interested': whyInterested,
+      'Availability': availability,
       'Application Date': new Date().toISOString(),
-      'Source': 'Website Application'
+      'Source': 'Course Application'
     });
 
     // Add to Zoho Campaign
@@ -81,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     // TODO: Save to database
-    // await db.applications.create({ fullName, age, email, phone, ... });
+    // await db.applications.create({ fullName, location, gender, phone, email, courseOfInterest, whyInterested, availability });
 
     // Send notification email to admin
     // await sendEmail({ 

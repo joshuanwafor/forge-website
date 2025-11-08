@@ -7,35 +7,40 @@ import Footer from "@/components/Footer";
 export default function Apply() {
   const [formData, setFormData] = useState({
     fullName: "",
-    age: "",
-    email: "",
+    location: "",
+    gender: "",
     phone: "",
-    challenge: "",
-    hasCourse: "",
-    skills: "",
-    equity: "",
-    likelihood: 5,
-    likelihoodReason: ""
+    email: "",
+    courseOfInterest: "",
+    whyInterested: "",
+    availability: ""
   });
 
   const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateProgress = () => {
-    const fields = Object.values(formData);
-    const filled = fields.filter(val => val !== "").length;
-    const percentage = (filled / fields.length) * 100;
+    const requiredFields = [
+      formData.fullName,
+      formData.location,
+      formData.gender,
+      formData.phone,
+      formData.email,
+      formData.courseOfInterest,
+      formData.whyInterested,
+      formData.availability
+    ];
+    const filled = requiredFields.filter(val => val !== "").length;
+    const percentage = (filled / requiredFields.length) * 100;
     setProgress(Math.round(percentage));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setTimeout(updateProgress, 0);
   };
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,13 +71,6 @@ export default function Apply() {
     }
   };
 
-  const isStepComplete = () => {
-    if (currentStep === 1) {
-      return formData.fullName && formData.age && formData.email;
-    }
-    return true;
-  };
-
   if (isSubmitted) {
     return (
       <div className="bg-black text-white min-h-screen">
@@ -99,7 +97,7 @@ export default function Apply() {
             </h1>
 
             <p className="text-xl text-gray-400 mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-              Thank you for applying to The Forge Academy. Our team will review your application and get back to you within 48 hours.
+              Thank you for applying! Our team will review your application and get back to you within 48 hours.
             </p>
 
             <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm mb-8 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
@@ -108,8 +106,8 @@ export default function Apply() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
-              <a href="/academy" className="px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all">
-                Back to Academy
+              <a href="/courses" className="px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all">
+                View Courses
               </a>
               <a href="/" className="px-8 py-3 border border-white/30 rounded-full hover:bg-white/10 transition-all">
                 Go Home
@@ -138,15 +136,15 @@ export default function Apply() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-6 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-full text-sm backdrop-blur-sm font-medium text-orange-400">
             <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
-            Application Form
+            Course Application
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-[1.1] tracking-tight mb-4">
-            The Forge Academy
+            Apply for a Course
           </h1>
           
           <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Apply now to join our elite program where failure is mandatory and success is inevitable.
+            Fill out the form below to apply for one of our professional training programs.
           </p>
 
           {/* Progress Bar */}
@@ -168,17 +166,10 @@ export default function Apply() {
       {/* Form Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Step 1: Personal Information */}
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="p-8 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-white font-bold">
-                  1
-                </div>
-                <h2 className="text-2xl font-bold">Personal Information</h2>
-              </div>
-
               <div className="space-y-6">
+                {/* Full Name */}
                 <div>
                   <label className="block text-sm font-semibold mb-2">
                     Full Name <span className="text-red-500">*</span>
@@ -194,212 +185,133 @@ export default function Apply() {
                   />
                 </div>
 
+                {/* Location & Gender */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold mb-2">
-                      Age <span className="text-red-500">*</span>
+                      Location <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="number"
-                      name="age"
-                      value={formData.age}
+                      type="text"
+                      name="location"
+                      value={formData.location}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white"
-                      placeholder="Your age"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500"
+                      placeholder="City, State"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold mb-2">
-                      Phone Number
+                      Gender <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white"
+                    >
+                      <option value="" className="bg-black">Select gender</option>
+                      <option value="male" className="bg-black">Male</option>
+                      <option value="female" className="bg-black">Female</option>
+                      <option value="other" className="bg-black">Other</option>
+                      <option value="prefer-not-to-say" className="bg-black">Prefer not to say</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Phone & Email */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">
+                      Phone Number <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white"
+                      required
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500"
                       placeholder="+234 xxx xxx xxxx"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Step 2: Application Questions */}
-            <div className="p-8 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-white font-bold">
-                  2
-                </div>
-                <h2 className="text-2xl font-bold">Application Questions</h2>
-              </div>
-
-              <div className="space-y-6">
-                {/* Question 1 */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Question 1 <span className="text-red-500">*</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mb-3">
-                    What is your current biggest challenge in starting or running a business?
-                  </p>
-                  <textarea
-                    name="challenge"
-                    value={formData.challenge}
-                    onChange={handleChange}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500 resize-none"
-                    placeholder="Share your biggest challenge..."
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    {formData.challenge.length} characters
-                  </div>
-                </div>
-
-                {/* Question 2 */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Question 2 <span className="text-red-500">*</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mb-3">
-                    Have you ever invested in any online course or business program before?
-                  </p>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-white/10 transition-all">
-                      <input
-                        type="radio"
-                        name="hasCourse"
-                        value="yes"
-                        checked={formData.hasCourse === "yes"}
-                        onChange={handleChange}
-                        className="w-4 h-4 text-orange-500 focus:ring-orange-500"
-                      />
-                      <span>Yes</span>
-                    </label>
-                    <label className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-white/10 transition-all">
-                      <input
-                        type="radio"
-                        name="hasCourse"
-                        value="no"
-                        checked={formData.hasCourse === "no"}
-                        onChange={handleChange}
-                        className="w-4 h-4 text-orange-500 focus:ring-orange-500"
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Question 3 */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Question 3 <span className="text-red-500">*</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mb-3">
-                    What skills or knowledge do you want to gain from The Forge Academy?
-                  </p>
-                  <textarea
-                    name="skills"
-                    value={formData.skills}
-                    onChange={handleChange}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500 resize-none"
-                    placeholder="Describe the skills you want to learn..."
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    {formData.skills.length} characters
-                  </div>
-                </div>
-
-                {/* Question 4 */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Question 4 <span className="text-red-500">*</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mb-3">
-                    Would you be interested in earning equity while learning real-time business strategies?
-                  </p>
-                  <textarea
-                    name="equity"
-                    value={formData.equity}
-                    onChange={handleChange}
-                    required
-                    rows={3}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500 resize-none"
-                    placeholder="Share your thoughts..."
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    {formData.equity.length} characters
-                  </div>
-                </div>
-
-                {/* Question 5 */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Question 5 <span className="text-red-500">*</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mb-3">
-                    How likely are you to invest in a hands-on business learning platform like ours?
-                  </p>
-                  <p className="text-xs text-gray-500 mb-4">
-                    Rate from 1 (Not likely) to 10 (Very likely)
-                  </p>
-                  
-                  <div className="flex items-center gap-2 mb-4">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, likelihood: num }));
-                          updateProgress();
-                        }}
-                        className={`flex-1 py-3 rounded-lg font-bold transition-all ${
-                          formData.likelihood === num
-                            ? "bg-gradient-to-r from-orange-500 to-red-500 text-white scale-110"
-                            : "bg-white/5 border border-white/10 hover:bg-white/10"
-                        }`}
-                      >
-                        {num}
-                      </button>
-                    ))}
-                  </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Please explain your rating
+                    <label className="block text-sm font-semibold mb-2">
+                      Email Address <span className="text-red-500">*</span>
                     </label>
-                    <textarea
-                      name="likelihoodReason"
-                      value={formData.likelihoodReason}
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleChange}
-                      rows={3}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500 resize-none"
-                      placeholder="Explain why you chose this rating..."
+                      required
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500"
+                      placeholder="your.email@example.com"
                     />
-                    <div className="text-xs text-gray-500 mt-1">
-                      {formData.likelihoodReason.length} characters
-                    </div>
                   </div>
+                </div>
+
+                {/* Course of Interest */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Course of Interest <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="courseOfInterest"
+                    value={formData.courseOfInterest}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white"
+                  >
+                    <option value="" className="bg-black">Select a course</option>
+                    <option value="web-development" className="bg-black">Web Development</option>
+                    <option value="mobile-development" className="bg-black">Mobile Development</option>
+                    <option value="backend-development" className="bg-black">Backend Development</option>
+                    <option value="design" className="bg-black">Design (UI/UX)</option>
+                  </select>
+                </div>
+
+                {/* Why Interested */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Why are you interested? <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="whyInterested"
+                    value={formData.whyInterested}
+                    onChange={handleChange}
+                    required
+                    rows={5}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white placeholder-gray-500 resize-none"
+                    placeholder="Tell us why you want to join this course and what you hope to achieve..."
+                  />
+                  <div className="text-xs text-gray-500 mt-1">
+                    {formData.whyInterested.length} characters
+                  </div>
+                </div>
+
+                {/* Availability */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Availability <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="availability"
+                    value={formData.availability}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-white"
+                  >
+                    <option value="" className="bg-black">Select your availability</option>
+                    <option value="weekdays" className="bg-black">Weekdays (Mon-Fri)</option>
+                    <option value="weekends" className="bg-black">Weekends (Sat-Sun)</option>
+                    <option value="evenings" className="bg-black">Evenings only</option>
+                    <option value="flexible" className="bg-black">Flexible schedule</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -454,4 +366,3 @@ export default function Apply() {
     </div>
   );
 }
-
