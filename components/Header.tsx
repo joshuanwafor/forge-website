@@ -30,7 +30,7 @@ export default function Header({ activePage }: HeaderProps) {
         };
       case "academy":
         return {
-          primary: { text: "Apply", href: "#apply" },
+          primary: { text: "Apply", href: "/apply" },
           secondary: { text: "Join Waitlist", href: "#waitlist" },
           gradient: "from-orange-400 via-red-500 to-red-600",
           shadow: "hover:shadow-orange-500/50"

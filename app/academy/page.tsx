@@ -7,38 +7,92 @@ export default function Academy() {
       <Header activePage="academy" />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="mb-8 inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm">
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 -z-10">
+          {/* Gradient Orbs */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/30 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-red-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          
+          {/* Animated Grid */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+          
+          {/* Floating Particles */}
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-orange-400/40 rounded-full animate-float"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${10 + Math.random() * 20}s`
+                }}
+              ></div>
+            ))}
+          </div>
+          
+          {/* Gradient Mesh Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-60"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <div className="mb-10 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-full text-sm backdrop-blur-sm font-medium text-orange-400 shadow-lg shadow-orange-500/10 animate-fadeInUp">
+            <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
             Founder's Journey
           </div>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-            The Only Academy Where
-          </h1>
+          <div className="mb-6 space-y-2">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight animate-fadeInUp">
+              <span className="block">The Only Academy Where</span>
+            </h1>
+            
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+              <span className="block bg-gradient-to-r from-orange-400 via-red-500 to-orange-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                Failure
+              </span>
+            </h1>
+            
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+              <span className="block">is Mandatory</span>
+            </h1>
+          </div>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-12 leading-tight bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-            Failure
-          </h1>
-          
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-12 leading-tight">
-            is Mandatory
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-400 mb-6 max-w-3xl mx-auto leading-relaxed font-light animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
             Real teams. Real clients. Real equity.
           </p>
           
-          <div className="mb-12">
-            <p className="text-lg text-gray-500 mb-4">We Make You Know</p>
+          <div className="mb-12 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+            <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-600 border-2 border-black"></div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-400 to-pink-600 border-2 border-black"></div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 border-2 border-black"></div>
+              </div>
+              <span className="text-sm font-medium text-gray-300">Join 1000+ founders</span>
+            </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-lg">
-              Apply
-            </button>
-            <button className="px-8 py-4 border border-white/30 rounded-full hover:bg-white/10 transition-all text-lg">
-              Join Waitlist
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+            <a href="/apply" className="group relative px-10 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-full transition-all transform hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 text-lg overflow-hidden">
+              <span className="relative z-10 flex items-center gap-2">
+                Apply
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            </a>
+            <button className="group px-10 py-4 border-2 border-white/30 rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-lg backdrop-blur-sm font-semibold relative overflow-hidden">
+              <span className="relative z-10 flex items-center gap-2">
+                Join Waitlist
+                <svg className="w-5 h-5 group-hover:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
           </div>
         </div>
@@ -230,9 +284,9 @@ export default function Academy() {
             The academy identifies and cultivates exceptional talent. Those prepared to commit, persist through adversity, and build lasting value.
           </p>
 
-          <button className="px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl mb-8">
+          <a href="/apply" className="inline-block px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl mb-8">
             APPLY NOW
-          </button>
+          </a>
 
           <div className="grid md:grid-cols-2 gap-4 mb-8 max-w-xl mx-auto">
             <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
