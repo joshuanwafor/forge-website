@@ -22,6 +22,9 @@ export default function Home() {
               <Link href="/academy" className="hidden md:block text-gray-300 hover:text-white transition-colors">
                 Academy
               </Link>
+              <Link href="/courses" className="hidden md:block text-gray-300 hover:text-white transition-colors">
+                Courses
+              </Link>
             </div>
             
             {/* Desktop Navigation */}
@@ -54,6 +57,7 @@ export default function Home() {
             <div className="md:hidden py-4 border-t border-white/10">
               <Link href="/" className="block py-2 text-white transition-colors">Hub</Link>
               <Link href="/academy" className="block py-2 text-gray-300 hover:text-white transition-colors">Academy</Link>
+              <Link href="/courses" className="block py-2 text-gray-300 hover:text-white transition-colors">Courses</Link>
               <button className="w-full mt-2 px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors">
                 Book a Tour
               </button>
@@ -353,11 +357,11 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Academy</h4>
+              <h4 className="text-white font-semibold mb-4">Learn</h4>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li><Link href="/academy" className="hover:text-white transition-colors">Programs</Link></li>
+                <li><Link href="/academy" className="hover:text-white transition-colors">Academy</Link></li>
+                <li><Link href="/courses" className="hover:text-white transition-colors">Courses</Link></li>
                 <li><Link href="/academy" className="hover:text-white transition-colors">Apply</Link></li>
-                <li><Link href="/academy" className="hover:text-white transition-colors">Join Waitlist</Link></li>
               </ul>
             </div>
             <div>
