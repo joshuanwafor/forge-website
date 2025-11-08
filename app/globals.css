@@ -43,6 +43,26 @@
   .animate-float {
     animation: float linear infinite;
   }
+  
+  .animate-blob {
+    animation: blob 7s ease-in-out infinite;
+  }
+  
+  .animate-spin-slow {
+    animation: spin-slow 30s linear infinite;
+  }
+  
+  .animate-grid-flow {
+    animation: grid-flow 20s ease-in-out infinite;
+  }
+  
+  .animate-beam {
+    animation: beam 8s ease-in-out infinite;
+  }
+  
+  .animate-wave {
+    animation: wave 10s ease-in-out infinite;
+  }
 }
 
 @keyframes marquee {
@@ -90,5 +110,61 @@
   100% {
     transform: translateY(-100vh) translateX(20px);
     opacity: 0;
+  }
+}
+
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(80px, -80px) scale(1.2);
+  }
+  66% {
+    transform: translate(-60px, 60px) scale(0.8);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes grid-flow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes beam {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(100vh);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(200vh);
+  }
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-80px) scaleY(1.2);
+    opacity: 0.5;
   }
 }

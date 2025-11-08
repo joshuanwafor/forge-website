@@ -85,7 +85,7 @@ export default function Academy() {
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
             </a>
-            <button className="group px-10 py-4 border-2 border-white/30 rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-lg backdrop-blur-sm font-semibold relative overflow-hidden">
+            <a href="/waitlist" className="group px-10 py-4 border-2 border-white/30 rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-lg backdrop-blur-sm font-semibold relative overflow-hidden inline-block">
               <span className="relative z-10 flex items-center gap-2">
                 Join Waitlist
                 <svg className="w-5 h-5 group-hover:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,7 @@ export default function Academy() {
                 </svg>
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -284,9 +284,14 @@ export default function Academy() {
             The academy identifies and cultivates exceptional talent. Those prepared to commit, persist through adversity, and build lasting value.
           </p>
 
-          <a href="/apply" className="inline-block px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl mb-8">
-            APPLY NOW
-          </a>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <a href="/apply" className="inline-block px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl">
+              APPLY NOW
+            </a>
+            <a href="/waitlist" className="inline-block px-12 py-5 border-2 border-white/30 font-bold rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-xl">
+              JOIN WAITLIST
+            </a>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-4 mb-8 max-w-xl mx-auto">
             <div className="p-4 bg-white/5 border border-white/10 rounded-xl">

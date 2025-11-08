@@ -34,10 +34,36 @@ export default function Apply() {
     setTimeout(updateProgress, 0);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        console.error('Submission failed:', result.error);
+        alert('Failed to submit. Please try again.');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isStepComplete = () => {
@@ -46,6 +72,56 @@ export default function Apply() {
     }
     return true;
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="bg-black text-white min-h-screen">
+        <Header activePage="academy" />
+
+        <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center overflow-hidden">
+          {/* Animated Background */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-500/30 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-60"></div>
+          </div>
+
+          <div className="max-w-2xl mx-auto text-center relative z-10">
+            <div className="mb-8 inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full animate-fadeInUp">
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <h1 className="text-4xl md:text-5xl font-black mb-4 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+              Application Submitted! 🎉
+            </h1>
+
+            <p className="text-xl text-gray-400 mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+              Thank you for applying to The Forge Academy. Our team will review your application and get back to you within 48 hours.
+            </p>
+
+            <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm mb-8 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+              <p className="text-sm text-gray-400 mb-2">Confirmation sent to:</p>
+              <p className="text-lg font-semibold text-white">{formData.email}</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+              <a href="/academy" className="px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all">
+                Back to Academy
+              </a>
+              <a href="/" className="px-8 py-3 border border-white/30 rounded-full hover:bg-white/10 transition-all">
+                Go Home
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-black text-white min-h-screen">
@@ -332,16 +408,24 @@ export default function Apply() {
             <div className="text-center">
               <button
                 type="submit"
-                disabled={progress < 100}
+                disabled={progress < 100 || isSubmitting}
                 className={`group relative px-12 py-4 rounded-full font-bold text-lg transition-all transform ${
-                  progress === 100
+                  progress === 100 && !isSubmitting
                     ? "bg-gradient-to-r from-orange-500 to-red-600 text-white hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50"
                     : "bg-white/10 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                {progress === 100 ? (
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2 justify-center">
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Submitting...
+                  </span>
+                ) : progress === 100 ? (
                   <>
-                    <span className="relative z-10 flex items-center gap-2">
+                    <span className="relative z-10 flex items-center gap-2 justify-center">
                       Submit Application
                       <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

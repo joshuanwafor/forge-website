@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Forge Website
+
+A modern, animated website for Forge - combining a tech hub workspace, startup academy, and professional courses platform.
+
+## Features
+
+- 🏢 **Hub** - Premium workspace and coworking space for developers
+- 🎓 **Academy** - Elite startup program where failure is mandatory
+- 📚 **Courses** - Professional training in Web, Mobile, Backend, and Design
+- 📝 **Application Forms** - Integrated with Zoho Campaign
+- ✨ **Modern UI** - Animated backgrounds, gradient effects, glass morphism
+- 📱 **Fully Responsive** - Works on all devices
+
+## Pages
+
+- `/` - Hub (Workspace) landing page
+- `/academy` - Academy program details
+- `/courses` - Course offerings
+- `/apply` - Academy application form
+- `/waitlist` - Waitlist signup
+- `/about` - Team and company information
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development Server
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-## Learn More
+## Zoho Campaign Integration
 
-To learn more about Next.js, take a look at the following resources:
+Forms automatically sync to Zoho Campaign when configured. See `SETUP.md` for detailed instructions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Quick Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Create `.env.local` in the root directory:
 
-## Deploy on Vercel
+```env
+ZOHO_AUTH_TOKEN=your_zoho_auth_token
+ZOHO_API_URL=https://campaigns.zoho.com/api/v1.1
+ZOHO_WAITLIST_KEY=your_waitlist_list_key
+ZOHO_ACADEMY_LIST_KEY=your_academy_list_key
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Get credentials from [Zoho Campaign API Settings](https://www.zoho.com/campaigns/help/api/auth-token.html)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech Stack
+
+- **Framework**: Next.js 16
+- **Styling**: Tailwind CSS 3
+- **Language**: TypeScript
+- **Font**: Inter (Google Fonts)
+- **Animations**: CSS Keyframes + Tailwind utilities
+- **API Integration**: Zoho Campaign
+
+## Project Structure
+
+```
+app/
+├── (pages)
+│   ├── page.tsx          # Hub homepage
+│   ├── academy/          # Academy page
+│   ├── courses/          # Courses page
+│   ├── apply/            # Application form
+│   ├── waitlist/         # Waitlist form
+│   └── about/            # About page
+├── api/
+│   ├── waitlist/         # Waitlist API endpoint
+│   └── apply/            # Application API endpoint
+├── layout.tsx            # Root layout
+└── globals.css           # Global styles
+
+components/
+├── Header.tsx            # Shared navigation
+└── Footer.tsx            # Shared footer
+```
+
+## Key Features
+
+### Animations
+- Blob gradients with organic movement
+- Rotating gradient meshes
+- Animated grid patterns
+- Traveling light beams
+- Floating particles
+- Wave effects
+
+### Forms
+- Real-time validation
+- Progress tracking
+- Loading states
+- Success screens
+- Zoho Campaign sync
+
+### Design System
+- Color-coded sections (Cyan/Blue for Hub, Orange/Red for Academy, Purple/Pink for Courses)
+- Glass morphism effects
+- Gradient text and buttons
+- Responsive typography
+- Mobile-first approach
+
+## Deployment
+
+Deploy on Vercel:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+Don't forget to add your environment variables in the Vercel dashboard.
+
+## License
+
+© 2025 Forge. All rights reserved.

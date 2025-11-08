@@ -10,20 +10,32 @@ export default function Home() {
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 -z-10">
-          {/* Gradient Orbs */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          {/* Large Gradient Orbs with Movement */}
+          <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-cyan-500/40 rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute top-1/3 -right-32 w-[600px] h-[600px] bg-blue-500/40 rounded-full blur-3xl animate-blob" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/30 rounded-full blur-3xl animate-blob" style={{ animationDelay: '4s' }}></div>
+          
+          {/* Rotating Gradient Mesh */}
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 via-transparent to-blue-500/30 animate-spin-slow"></div>
+          </div>
           
           {/* Animated Grid */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)] animate-grid-flow"></div>
+          
+          {/* Animated Beams */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-full left-1/4 w-1 h-full bg-gradient-to-b from-transparent via-cyan-500/60 to-transparent animate-beam" style={{ animationDelay: '0s' }}></div>
+            <div className="absolute -top-full left-1/2 w-1 h-full bg-gradient-to-b from-transparent via-blue-500/60 to-transparent animate-beam" style={{ animationDelay: '1.5s' }}></div>
+            <div className="absolute -top-full right-1/3 w-1 h-full bg-gradient-to-b from-transparent via-purple-500/60 to-transparent animate-beam" style={{ animationDelay: '3s' }}></div>
+          </div>
           
           {/* Floating Particles */}
           <div className="absolute inset-0">
-            {[...Array(20)].map((_, i) => (
+            {[...Array(40)].map((_, i) => (
               <div
                 key={i}
-                className="absolute w-1 h-1 bg-cyan-400/40 rounded-full animate-float"
+                className="absolute w-2 h-2 bg-cyan-400/60 rounded-full animate-float shadow-lg shadow-cyan-400/50"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
@@ -34,8 +46,14 @@ export default function Home() {
             ))}
           </div>
           
+          {/* Moving Gradient Waves */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/40 via-transparent to-transparent animate-wave"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/40 via-transparent to-transparent animate-wave" style={{ animationDelay: '3s' }}></div>
+          </div>
+          
           {/* Gradient Mesh Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-60"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/80"></div>
         </div>
 
         <div className="max-w-7xl mx-auto text-center relative z-10">

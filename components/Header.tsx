@@ -31,7 +31,7 @@ export default function Header({ activePage }: HeaderProps) {
       case "academy":
         return {
           primary: { text: "Apply", href: "/apply" },
-          secondary: { text: "Join Waitlist", href: "#waitlist" },
+          secondary: { text: "Join Waitlist", href: "/waitlist" },
           gradient: "from-orange-400 via-red-500 to-red-600",
           shadow: "hover:shadow-orange-500/50"
         };
@@ -172,37 +172,39 @@ export default function Header({ activePage }: HeaderProps) {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-6 border-t border-white/10 animate-fadeIn space-y-2">
-            {[
-              { name: "Hub", path: "/", page: "hub" as const },
-              { name: "Academy", path: "/academy", page: "academy" as const },
-              { name: "Courses", path: "/courses", page: "courses" as const }
-            ].map((item) => (
-              <Link 
-                key={item.page}
-                href={item.path} 
-                className={`block py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
-                  activePage === item.page 
-                    ? `text-white bg-gradient-to-r ${getNavIndicator(item.page)} bg-opacity-10 border border-white/20` 
-                    : "text-gray-300 hover:text-white hover:bg-white/5"
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div className="md:hidden py-4 border-t border-white/10 animate-fadeIn">
+            <div className="space-y-1">
+              {[
+                { name: "Hub", path: "/", page: "hub" as const },
+                { name: "Academy", path: "/academy", page: "academy" as const },
+                { name: "Courses", path: "/courses", page: "courses" as const }
+              ].map((item) => (
+                <Link 
+                  key={item.page}
+                  href={item.path} 
+                  className={`block py-3 px-4 rounded-lg font-medium transition-all ${
+                    activePage === item.page 
+                      ? "text-white bg-white/10" 
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
             
-            <div className="pt-4 space-y-2">
+            <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
               <a 
                 href={config.primary.href}
-                className={`block w-full px-6 py-3.5 bg-gradient-to-r ${config.gradient} text-white text-center font-bold rounded-xl hover:opacity-90 transition-all transform active:scale-95`}
+                className="block w-full px-6 py-3 bg-white text-black text-center font-semibold rounded-lg hover:bg-gray-200 transition-all"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {config.primary.text}
               </a>
               <a 
                 href={config.secondary.href}
-                className="block w-full px-6 py-3.5 border-2 border-white/30 text-center font-semibold rounded-xl hover:bg-white/10 hover:border-white/40 transition-all"
+                className="block w-full px-6 py-3 border border-white/30 text-center font-medium rounded-lg hover:bg-white/5 hover:border-white/50 transition-all"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {config.secondary.text}
