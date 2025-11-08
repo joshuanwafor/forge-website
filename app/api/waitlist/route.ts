@@ -24,35 +24,35 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare data for Zoho Campaign
-    const zohoData = {
-      listkey: ZOHO_LIST_KEY,
-      contactinfo: JSON.stringify({
-        'Contact Email': email,
-        'First Name': fullName.split(' ')[0] || fullName,
-        'Last Name': fullName.split(' ').slice(1).join(' ') || '',
-        'Phone': phone || '',
-        'Interest': interest,
-        'Referral Source': referral || 'Unknown',
-        'Message': message || '',
-        'Signup Date': new Date().toISOString(),
-        'Source': 'Website Waitlist'
-      }),
-      resfmt: 'JSON'
-    };
+    const contactInfo = JSON.stringify({
+      'Contact Email': email,
+      'First Name': fullName.split(' ')[0] || fullName,
+      'Last Name': fullName.split(' ').slice(1).join(' ') || '',
+      'Phone': phone || '',
+      'Interest': interest,
+      'Referral Source': referral || 'Unknown',
+      'Message': message || '',
+      'Signup Date': new Date().toISOString(),
+      'Source': 'Website Waitlist'
+    });
 
     // Add to Zoho Campaign
     if (ZOHO_AUTH_TOKEN && ZOHO_LIST_KEY) {
       try {
+        const params: Record<string, string> = {
+          authtoken: ZOHO_AUTH_TOKEN,
+          scope: 'CampaignsAPI',
+          listkey: ZOHO_LIST_KEY,
+          contactinfo: contactInfo,
+          resfmt: 'JSON'
+        };
+
         const zohoResponse = await fetch(`${ZOHO_API_URL}/json/listsubscribe`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: new URLSearchParams({
-            authtoken: ZOHO_AUTH_TOKEN,
-            scope: 'CampaignsAPI',
-            ...zohoData
-          }).toString()
+          body: new URLSearchParams(params).toString()
         });
 
         const zohoResult = await zohoResponse.json();
