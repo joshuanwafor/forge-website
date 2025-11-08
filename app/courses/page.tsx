@@ -78,23 +78,69 @@ export default function Courses() {
       <Header activePage="courses" />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="mb-8 inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm">
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-[80vh] flex items-center overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 -z-10">
+          {/* Gradient Orbs */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          
+          {/* Animated Grid */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+          
+          {/* Floating Particles */}
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-purple-400/40 rounded-full animate-float"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${10 + Math.random() * 20}s`
+                }}
+              ></div>
+            ))}
+          </div>
+          
+          {/* Gradient Mesh Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-60"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <div className="mb-10 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full text-sm backdrop-blur-sm font-medium text-purple-400 shadow-lg shadow-purple-500/10 animate-fadeInUp">
+            <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
             Professional Training Programs
           </div>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-            Learn to Build
-          </h1>
+          <div className="mb-6 space-y-2">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight animate-fadeInUp">
+              <span className="block">Learn to Build</span>
+            </h1>
+            
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+              <span className="block bg-gradient-to-r from-purple-400 via-pink-500 to-purple-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                The Future
+              </span>
+            </h1>
+          </div>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-12 leading-tight bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            The Future
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-400 mb-6 max-w-3xl mx-auto leading-relaxed font-light animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
             Industry-leading courses taught by experienced developers. Build real projects, earn certificates, and launch your tech career.
           </p>
+          
+          <div className="mb-12 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+            <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-600 border-2 border-black"></div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-red-600 border-2 border-black"></div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-600 border-2 border-black"></div>
+              </div>
+              <span className="text-sm font-medium text-gray-300">Join 5000+ students</span>
+            </div>
+          </div>
         </div>
       </section>
 
