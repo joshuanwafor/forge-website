@@ -30,14 +30,21 @@ After payment:
 
 ## Full Course Prices (Shared After Application)
 
-| Course | Duration | Estimated Price |
-|--------|----------|-----------------|
-| Web Development | 12 weeks | ₦150,000 |
-| Mobile Development | 14 weeks | ₦180,000 |
-| Backend Development | 16 weeks | ₦200,000 |
-| Design (UI/UX) | 10 weeks | ₦120,000 |
+**All courses:** ₦100,000 (4-6 months intensive program) **🎉 DISCOUNTED PRICE**
 
-**Note:** Application fee is separate from course fee.
+Available courses:
+- Web Development
+- Mobile Development
+- Backend Development
+- Frontend Development
+- Design Mastery (Graphic, Product Design [UI/UX], 3D, or Illustration)
+- Digital Marketing & Strategy
+- WordPress Training
+- Advanced AI
+
+**Note:** 
+- Application fee (₦5,000) is separate from course fee
+- The ₦100,000 course fee is a special discounted rate
 
 ## Environment Setup
 

@@ -93,13 +93,19 @@ ZOHO_ACADEMY_LIST_KEY=your_academy_list_key_here
 4. ✅ **Synced to Zoho Campaign** (optional, if configured)
 5. ✅ **Success screen shown** to user
 
-## Application Fee
+## Course Fees
 
-**₦5,000** - Required for all course applications
+### Application Fee
+**₦5,000** - Required for all course applications (paid upfront)
 
-After payment:
+### Full Course Fee
+**₦100,000** - All courses (4-6 months intensive program) **- DISCOUNTED PRICE**
+
+After application payment:
 - Application saved to database
 - Team contacts you within 24 hours
-- Full course pricing and details provided
+- Full course details and payment plans provided
 - Enrollment process begins
+
+**Note:** The ₦100,000 course fee is a special discounted rate for our intensive mentorship program.
 

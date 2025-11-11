@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { usePaystackPayment } from "react-paystack";
+import { useState, useEffect } from "react";
+import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -35,6 +35,7 @@ export default function Apply() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [paystackLoaded, setPaystackLoaded] = useState(false);
 
   const updateProgress = () => {
     const requiredFields = [
@@ -99,50 +100,47 @@ export default function Apply() {
     setShowPayment(false);
   };
 
-  // Paystack configuration
-  const paystackConfig = {
-    reference: new Date().getTime().toString(),
-    email: formData.email,
-    amount: APPLICATION_FEE,
-    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_xxxxxxxxxxxxxxxx',
-    metadata: {
-      custom_fields: [
-        {
-          display_name: 'Full Name',
-          variable_name: 'full_name',
-          value: formData.fullName
-        },
-        {
-          display_name: 'Course',
-          variable_name: 'course',
-          value: formData.courseOfInterest
-        },
-        {
-          display_name: 'Phone',
-          variable_name: 'phone',
-          value: formData.phone
-        },
-        {
-          display_name: 'Fee Type',
-          variable_name: 'fee_type',
-          value: 'Application Fee'
-        }
-      ]
-    }
-  };
-
-  // Initialize Paystack
-  const initializePayment = usePaystackPayment(paystackConfig);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Show payment modal with callbacks
+    if (!paystackLoaded || typeof window === 'undefined' || !(window as any).PaystackPop) {
+      alert('Payment system is loading, please try again in a moment.');
+      return;
+    }
+    
+    // Show payment modal
     setShowPayment(true);
-    initializePayment({
-      onSuccess: onPaymentSuccess,
-      onClose: onPaymentClose
-    } as any);
+    
+    // Initialize Paystack
+    const handler = (window as any).PaystackPop.setup({
+      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_xxxxxxxxxxxxxxxx',
+      email: formData.email,
+      amount: APPLICATION_FEE,
+      ref: (new Date()).getTime().toString(),
+      metadata: {
+        custom_fields: [
+          {
+            display_name: 'Full Name',
+            variable_name: 'full_name',
+            value: formData.fullName
+          },
+          {
+            display_name: 'Course',
+            variable_name: 'course',
+            value: formData.courseOfInterest
+          },
+          {
+            display_name: 'Phone',
+            variable_name: 'phone',
+            value: formData.phone
+          }
+        ]
+      },
+      onClose: onPaymentClose,
+      callback: onPaymentSuccess
+    });
+    
+    handler.openIframe();
   };
 
   if (isSubmitted) {
@@ -228,8 +226,14 @@ export default function Apply() {
   }
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      <Header activePage="academy" />
+    <>
+      <Script 
+        src="https://js.paystack.co/v1/inline.js"
+        onLoad={() => setPaystackLoaded(true)}
+        strategy="lazyOnload"
+      />
+      <div className="bg-black text-white min-h-screen">
+        <Header activePage="academy" />
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
@@ -506,5 +510,6 @@ export default function Apply() {
 
       <Footer />
     </div>
+    </>
   );
 }
