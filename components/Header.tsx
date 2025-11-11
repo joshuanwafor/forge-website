@@ -75,12 +75,11 @@ export default function Header({ activePage }: HeaderProps) {
               <div className="relative">
                 {/* Logo glow effect */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`}></div>
-                
                 {/* Logo text */}
-                <span className="relative text-2xl font-black tracking-tight bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:via-purple-300 group-hover:to-pink-300 transition-all duration-500">
+                {/* <span className="relative text-2xl font-black tracking-tight bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:via-purple-300 group-hover:to-pink-300 transition-all duration-500">
                   FORGE
-                </span>
-                
+                </span> */}
+                <img src="/forgetext.svg" alt="Forge Logo" height={50} />
                 {/* Animated underline */}
                 <div className={`absolute -bottom-1 left-0 h-[2px] w-0 bg-gradient-to-r ${config.gradient} group-hover:w-full transition-all duration-500 ease-out`}></div>
               </div>
