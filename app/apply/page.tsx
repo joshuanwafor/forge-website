@@ -102,45 +102,65 @@ export default function Apply() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted, Paystack loaded:', paystackLoaded);
+    console.log('PaystackPop available:', typeof (window as any).PaystackPop);
     
     if (!paystackLoaded || typeof window === 'undefined' || !(window as any).PaystackPop) {
+      console.error('Paystack not ready. Loaded:', paystackLoaded, 'Window:', typeof window);
       alert('Payment system is loading, please try again in a moment.');
       return;
     }
     
-    // Show payment modal
+    // Show payment indicator
     setShowPayment(true);
+    console.log('Opening Paystack payment modal...');
     
-    // Initialize Paystack
-    const handler = (window as any).PaystackPop.setup({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_xxxxxxxxxxxxxxxx',
-      email: formData.email,
-      amount: APPLICATION_FEE,
-      ref: (new Date()).getTime().toString(),
-      metadata: {
-        custom_fields: [
-          {
-            display_name: 'Full Name',
-            variable_name: 'full_name',
-            value: formData.fullName
-          },
-          {
-            display_name: 'Course',
-            variable_name: 'course',
-            value: formData.courseOfInterest
-          },
-          {
-            display_name: 'Phone',
-            variable_name: 'phone',
-            value: formData.phone
-          }
-        ]
-      },
-      onClose: onPaymentClose,
-      callback: onPaymentSuccess
-    });
-    
-    handler.openIframe();
+    try {
+      // Initialize Paystack Popup
+      const PaystackPop = (window as any).PaystackPop;
+      const handler = PaystackPop.setup({
+        key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_xxxxxxxxxxxxxxxx',
+        email: formData.email,
+        amount: APPLICATION_FEE,
+        ref: '' + Math.floor((Math.random() * 1000000000) + 1), // Generate random reference
+        metadata: {
+          custom_fields: [
+            {
+              display_name: 'Full Name',
+              variable_name: 'full_name',
+              value: formData.fullName
+            },
+            {
+              display_name: 'Course',
+              variable_name: 'course',
+              value: formData.courseOfInterest
+            },
+            {
+              display_name: 'Phone',
+              variable_name: 'phone',
+              value: formData.phone
+            }
+          ]
+        },
+        callback: function(response: any) {
+          // Payment successful
+          console.log('Payment successful:', response);
+          onPaymentSuccess(response);
+        },
+        onClose: function() {
+          // Payment closed
+          console.log('Payment closed');
+          onPaymentClose();
+        }
+      });
+      
+      console.log('Paystack handler created:', handler);
+      handler.openIframe();
+    } catch (error) {
+      console.error('Error initializing Paystack:', error);
+      setShowPayment(false);
+      alert('Error initializing payment. Please try again or contact support.');
+    }
   };
 
   if (isSubmitted) {
@@ -229,8 +249,14 @@ export default function Apply() {
     <>
       <Script 
         src="https://js.paystack.co/v1/inline.js"
-        onLoad={() => setPaystackLoaded(true)}
-        strategy="lazyOnload"
+        onLoad={() => {
+          console.log('Paystack script loaded successfully');
+          setPaystackLoaded(true);
+        }}
+        onError={(e) => {
+          console.error('Failed to load Paystack script:', e);
+        }}
+        strategy="afterInteractive"
       />
       <div className="bg-black text-white min-h-screen">
         <Header activePage="academy" />
