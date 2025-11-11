@@ -72,17 +72,7 @@ export default function Header({ activePage }: HeaderProps) {
           <div className="flex items-center gap-10">
             {/* Logo */}
             <Link href="/" className="group relative flex items-center gap-3">
-              <div className="relative">
-                {/* Logo glow effect */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`}></div>
-                {/* Logo text */}
-                {/* <span className="relative text-2xl font-black tracking-tight bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:via-purple-300 group-hover:to-pink-300 transition-all duration-500">
-                  FORGE
-                </span> */}
-                <img src="/forgetext.svg" alt="Forge Logo" height={50} />
-                {/* Animated underline */}
-                <div className={`absolute -bottom-1 left-0 h-[2px] w-0 bg-gradient-to-r ${config.gradient} group-hover:w-full transition-all duration-500 ease-out`}></div>
-              </div>
+              <img src="/forgetext.svg" alt="Forge Logo" className="h-8 w-auto" />
               
               {/* Optional badge */}
               <span className="hidden lg:inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/60 bg-white/5 border border-white/10 rounded-full group-hover:border-white/20 transition-colors">
