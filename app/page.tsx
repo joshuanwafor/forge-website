@@ -233,74 +233,301 @@ export default function Home() {
       </div>
 
       {/* Pricing Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Simple <span className="italic">Pricing.</span>
+              Flexible <span className="italic">Pricing.</span>
             </h2>
+            <p className="text-xl text-gray-400">Choose the plan that works best for you</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                name: "Day Pass",
-                price: "₦5,000",
-                period: "/day",
-                desc: "Perfect for trying out the space",
-                features: ["Hot desk access", "High-speed WiFi", "Coffee & snacks", "Meeting room (2hrs)"],
-                highlight: false
-              },
-              {
-                name: "Monthly",
-                price: "₦75,000",
-                period: "/month",
-                desc: "Best for freelancers & remote workers",
-                features: ["Dedicated desk", "24/7 access", "Unlimited coffee", "Meeting rooms", "Mail handling", "Community events"],
-                highlight: true
-              },
-              {
-                name: "Private Office",
-                price: "Custom",
-                period: "",
-                desc: "For teams that need privacy",
-                features: ["Your own office", "Custom setup", "Team lockers", "Priority booking", "Dedicated parking", "Premium support"],
-                highlight: false
-              }
-            ].map((plan, idx) => (
-              <div 
-                key={idx}
-                className={`p-8 rounded-3xl border transition-all ${
-                  plan.highlight 
-                    ? 'bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/50 scale-105' 
-                    : 'bg-white/5 border-white/10 hover:bg-white/10'
-                }`}
-              >
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                <p className="text-gray-400 text-sm mb-6">{plan.desc}</p>
-                <div className="mb-8">
-                  <span className="text-5xl font-bold">{plan.price}</span>
-                  <span className="text-gray-400">{plan.period}</span>
+          {/* Normal Workspace */}
+          <div className="mb-16">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-2">Normal Workspace</h3>
+              <p className="text-gray-500 text-sm">Shared coworking space</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <div className="flex flex-col p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 hover:border-cyan-500/30 transition-all">
+                <div className="text-center mb-8">
+                  <div className="h-6 mb-3"></div>
+                  <div className="text-sm text-gray-500 mb-2">Daily Rate</div>
+                  <div className="text-5xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-1">
+                    ₦2,000
+                  </div>
+                  <div className="text-gray-400 text-sm">/day</div>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start text-gray-300">
-                      <svg className="w-5 h-5 mr-2 mt-0.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
+                <ul className="space-y-3 flex-grow">
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Hot desk access
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    High-speed WiFi
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Coffee & refreshments
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Community access
+                  </li>
                 </ul>
-                <button className={`w-full py-3 rounded-full font-semibold transition-all ${
-                  plan.highlight
-                    ? 'bg-white text-black hover:bg-gray-200'
-                    : 'bg-white/10 hover:bg-white/20'
-                }`}>
-                  {plan.price === "Custom" ? "Contact Us" : "Get Started"}
+                <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all">
+                  Get Started
                 </button>
               </div>
-            ))}
+
+              <div className="flex flex-col p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 hover:border-cyan-500/30 transition-all">
+                <div className="text-center mb-8">
+                  <div className="inline-block px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-xs text-green-400 font-semibold mb-3">
+                    SAVE 30%
+                  </div>
+                  <div className="text-sm text-gray-500 mb-2">Weekly Rate</div>
+                  <div className="text-5xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-1">
+                    ₦10,000
+                  </div>
+                  <div className="text-gray-400 text-sm">/week</div>
+                </div>
+                <ul className="space-y-3 flex-grow">
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    All daily pass benefits
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    7 days of access
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Meeting room access
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Better value per day
+                  </li>
+                </ul>
+                <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all">
+                  Get Started
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Private Workspace */}
+          <div className="mb-16">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-2">Private Workspace</h3>
+              <p className="text-gray-500 text-sm">Your own dedicated office</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <div className="flex flex-col p-8 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-3xl hover:border-blue-500/50 transition-all">
+                <div className="text-center mb-8">
+                  <div className="h-6 mb-3"></div>
+                  <div className="text-sm text-gray-500 mb-2">Daily Rate</div>
+                  <div className="text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent mb-1">
+                    ₦6,000
+                  </div>
+                  <div className="text-gray-400 text-sm">/day</div>
+                </div>
+                <ul className="space-y-3 flex-grow">
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Private office space
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Full privacy & security
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    High-speed WiFi
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Premium amenities
+                  </li>
+                </ul>
+                <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all">
+                  Get Started
+                </button>
+              </div>
+
+              <div className="flex flex-col p-8 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-3xl hover:border-blue-500/50 transition-all">
+                <div className="text-center mb-8">
+                  <div className="inline-block px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-xs text-green-400 font-semibold mb-3">
+                    BEST VALUE
+                  </div>
+                  <div className="text-sm text-gray-500 mb-2">Weekly Rate</div>
+                  <div className="text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent mb-1">
+                    ₦42,000
+                  </div>
+                  <div className="text-gray-400 text-sm">/week</div>
+                </div>
+                <ul className="space-y-3 flex-grow">
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    All daily benefits
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    7 days of private space
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Priority support
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save ₦6,000/week
+                  </li>
+                </ul>
+                <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all">
+                  Get Started
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly Plans */}
+          <div>
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-2">Monthly Membership</h3>
+              <p className="text-gray-500 text-sm">Long-term commitment plans</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <div className="flex flex-col p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all">
+                <div className="text-center mb-8">
+                  <h4 className="text-xl font-bold mb-2">Business Hours</h4>
+                  <p className="text-gray-400 text-sm mb-4">9 AM - 6 PM, Monday to Friday</p>
+                  <div className="text-5xl font-bold mb-1">₦40,000</div>
+                  <div className="text-gray-400 text-sm">/month</div>
+                </div>
+                <ul className="space-y-3 mb-8 flex-grow">
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Dedicated desk
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    9 AM - 6 PM access
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Unlimited coffee
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Meeting room access
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Community events
+                  </li>
+                </ul>
+                <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all">
+                  Get Started
+                </button>
+              </div>
+
+              <div className="relative flex flex-col p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-2 border-cyan-500/50 rounded-3xl transform md:scale-105">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-xs font-bold text-white shadow-lg">
+                  MOST POPULAR
+                </div>
+                <div className="text-center mb-8">
+                  <h4 className="text-xl font-bold mb-2">24/7 Access</h4>
+                  <p className="text-gray-400 text-sm mb-4">Round-the-clock workspace access</p>
+                  <div className="text-5xl font-bold mb-1">₦120,000</div>
+                  <div className="text-gray-400 text-sm">/month</div>
+                </div>
+                <ul className="space-y-3 mb-8 flex-grow">
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Dedicated desk
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    24/7 access
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Unlimited coffee & snacks
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Meeting rooms included
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Mail handling
+                  </li>
+                  <li className="flex items-start text-gray-300 text-sm">
+                    <svg className="w-5 h-5 mr-3 mt-0.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Priority support
+                  </li>
+                </ul>
+                <button className="w-full mt-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all">
+                  Get Started
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

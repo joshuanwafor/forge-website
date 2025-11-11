@@ -36,31 +36,55 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-## Zoho Campaign Integration
+## Database & Integrations
 
-Forms automatically sync to Zoho Campaign when configured. See `SETUP.md` for detailed instructions.
+### Supabase (Required)
 
-### Quick Setup
+Forms save to Supabase database. See `SETUP.md` for detailed instructions.
 
-1. Create `.env.local` in the root directory:
+1. Create project at [supabase.com](https://supabase.com)
+2. Run SQL schema from `lib/supabase-schema.sql`
+3. Add credentials to `.env.local`:
 
 ```env
-ZOHO_AUTH_TOKEN=your_zoho_auth_token
-ZOHO_API_URL=https://campaigns.zoho.com/api/v1.1
-ZOHO_WAITLIST_KEY=your_waitlist_list_key
-ZOHO_ACADEMY_LIST_KEY=your_academy_list_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-2. Get credentials from [Zoho Campaign API Settings](https://www.zoho.com/campaigns/help/api/auth-token.html)
+**Note:** Service role key bypasses RLS for server-side operations.
+
+### Paystack Payment (Required for Courses)
+
+Course applications require payment processing:
+
+```env
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_xxxxx
+PAYSTACK_SECRET_KEY=sk_test_xxxxx
+```
+
+Get keys from [paystack.com](https://paystack.com). See `PAYMENT.md` for details.
+
+### Zoho Campaign (Optional)
+
+Forms also sync to Zoho Campaign for email marketing when configured:
+
+```env
+ZOHO_AUTH_TOKEN=your_zoho_token
+ZOHO_WAITLIST_KEY=your_waitlist_key
+ZOHO_ACADEMY_LIST_KEY=your_academy_key
+```
 
 ## Tech Stack
 
 - **Framework**: Next.js 16
 - **Styling**: Tailwind CSS 3
 - **Language**: TypeScript
+- **Database**: Supabase (PostgreSQL)
+- **Payments**: Paystack (react-paystack)
+- **Email Marketing**: Zoho Campaign (optional)
 - **Font**: Inter (Google Fonts)
 - **Animations**: CSS Keyframes + Tailwind utilities
-- **API Integration**: Zoho Campaign
 
 ## Project Structure
 

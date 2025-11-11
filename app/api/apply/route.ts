@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseServer } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,7 +12,10 @@ export async function POST(request: NextRequest) {
       email,
       courseOfInterest,
       whyInterested,
-      availability
+      availability,
+      paymentReference,
+      paymentStatus,
+      amountPaid
     } = body;
 
     // Validate required fields
@@ -19,6 +23,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    // Validate payment
+    if (!paymentReference || !paymentStatus || paymentStatus !== 'success') {
+      return NextResponse.json(
+        { error: 'Payment required to complete application' },
+        { status: 400 }
+      );
+    }
+
+    // Save to Supabase (using service role to bypass RLS)
+    const { data: supabaseData, error: supabaseError } = await supabaseServer
+      .from('course_applications')
+      .insert([
+        {
+          full_name: fullName,
+          location: location,
+          gender: gender,
+          phone: phone,
+          email: email,
+          course_of_interest: courseOfInterest,
+          why_interested: whyInterested,
+          availability: availability,
+          payment_reference: paymentReference,
+          payment_status: paymentStatus,
+          amount_paid: amountPaid
+        }
+      ])
+      .select();
+
+    if (supabaseError) {
+      console.error('Supabase error:', supabaseError);
+      return NextResponse.json(
+        { error: 'Failed to save application', details: supabaseError.message },
+        { status: 500 }
       );
     }
 
@@ -75,9 +115,6 @@ export async function POST(request: NextRequest) {
         // Continue even if Zoho fails
       }
     }
-
-    // TODO: Save to database
-    // await db.applications.create({ fullName, location, gender, phone, email, courseOfInterest, whyInterested, availability });
 
     // Send notification email to admin
     // await sendEmail({ 

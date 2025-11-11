@@ -14,11 +14,10 @@ export default function Courses() {
         "React.js & Next.js",
         "Responsive Design",
         "Web APIs & Performance",
-        "Progressive Web Apps"
+        "Full-Stack Development"
       ],
-      duration: "12 weeks",
-      level: "Beginner to Advanced",
-      price: "₦150,000"
+      duration: "4-6 months",
+      level: "Beginner to Advanced"
     },
     {
       id: 2,
@@ -31,11 +30,10 @@ export default function Courses() {
         "iOS & Android Development",
         "Mobile UI/UX Patterns",
         "App Store Deployment",
-        "Push Notifications & APIs"
+        "Cross-platform Development"
       ],
-      duration: "14 weeks",
-      level: "Intermediate",
-      price: "₦180,000"
+      duration: "4-6 months",
+      level: "Intermediate"
     },
     {
       id: 3,
@@ -50,26 +48,88 @@ export default function Courses() {
         "Authentication & Security",
         "Cloud Deployment & DevOps"
       ],
-      duration: "16 weeks",
-      level: "Intermediate to Advanced",
-      price: "₦200,000"
+      duration: "4-6 months",
+      level: "Intermediate to Advanced"
     },
     {
       id: 4,
-      title: "Design",
+      title: "Frontend Development",
+      icon: "💻",
+      gradient: "from-cyan-500 to-blue-500",
+      description: "Master modern frontend frameworks and build interactive user interfaces",
+      topics: [
+        "React.js & Vue.js",
+        "TypeScript & JavaScript",
+        "State Management",
+        "Performance Optimization",
+        "Modern CSS & Animations"
+      ],
+      duration: "4-6 months",
+      level: "Beginner to Advanced"
+    },
+    {
+      id: 5,
+      title: "Design Mastery",
       icon: "🎨",
       gradient: "from-orange-500 to-red-500",
-      description: "Create stunning user interfaces and experiences for digital products",
+      description: "Comprehensive design training across multiple disciplines",
       topics: [
-        "UI/UX Design Principles",
-        "Figma & Design Tools",
-        "Design Systems",
-        "Prototyping & Wireframing",
-        "User Research & Testing"
+        "Graphic Design",
+        "Product Design (UI/UX)",
+        "3D Design & Modeling",
+        "Illustration & Branding",
+        "Design Systems & Tools"
       ],
-      duration: "10 weeks",
-      level: "Beginner to Intermediate",
-      price: "₦120,000"
+      duration: "4-6 months",
+      level: "Beginner to Intermediate"
+    },
+    {
+      id: 6,
+      title: "Digital Marketing & Strategy",
+      icon: "📊",
+      gradient: "from-pink-500 to-purple-500",
+      description: "Master digital marketing, social media strategy, and growth tactics",
+      topics: [
+        "Social Media Marketing",
+        "SEO & Content Strategy",
+        "Analytics & Data-Driven Marketing",
+        "Email & Conversion Marketing",
+        "Brand Strategy & Growth"
+      ],
+      duration: "4-6 months",
+      level: "Beginner to Advanced"
+    },
+    {
+      id: 7,
+      title: "WordPress Training",
+      icon: "📝",
+      gradient: "from-blue-500 to-indigo-500",
+      description: "Build professional websites and manage content with WordPress",
+      topics: [
+        "WordPress Setup & Hosting",
+        "Theme Customization",
+        "Plugin Development",
+        "WooCommerce & E-commerce",
+        "SEO & Performance"
+      ],
+      duration: "4-6 months",
+      level: "Beginner"
+    },
+    {
+      id: 8,
+      title: "Advanced AI",
+      icon: "🤖",
+      gradient: "from-violet-500 to-purple-500",
+      description: "Learn artificial intelligence, machine learning, and AI integration",
+      topics: [
+        "AI Fundamentals & Concepts",
+        "Machine Learning Basics",
+        "AI Tools & Platforms",
+        "AI Integration in Apps",
+        "Prompt Engineering & GPT"
+      ],
+      duration: "4-6 months",
+      level: "Intermediate to Advanced"
     }
   ];
 
@@ -112,7 +172,7 @@ export default function Courses() {
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="mb-10 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full text-sm backdrop-blur-sm font-medium text-purple-400 shadow-lg shadow-purple-500/10 animate-fadeInUp">
             <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
-            Professional Training Programs
+            taught by experienced professionals
           </div>
           
           <div className="mb-6 space-y-2">
@@ -128,8 +188,48 @@ export default function Courses() {
           </div>
           
           <p className="text-xl md:text-2xl text-gray-400 mb-6 max-w-3xl mx-auto leading-relaxed font-light animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-            Industry-leading courses taught by experienced developers. Build real projects, earn certificates, and launch your tech career.
+            Join our 4-6 month intensive mentorship program with expert-led training, hands-on projects, and career support.
           </p>
+
+          {/* Program Highlights Section */}
+          <div className="max-w-6xl mx-auto mb-12 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+            <div className="text-center mb-8 px-4">
+              <h3 className="text-2xl font-bold mb-2">Program Highlights</h3>
+              <p className="text-gray-500 text-sm">What makes our mentorship program unique</p>
+            </div>
+            
+            {/* Grid Layout - Responsive */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 px-4">
+              {[
+                { icon: "📚", title: "Personalized Learning" },
+                { icon: "👨‍🏫", title: "Expert Mentorship" },
+                { icon: "🏫", title: "Physical & Hybrid" },
+                { icon: "💼", title: "Portfolio Development" },
+                { icon: "💰", title: "Flexible Payment" }
+              ].map((item, idx) => (
+                <div 
+                  key={idx}
+                  className="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-purple-500/30 transition-all group"
+                >
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                      {item.icon}
+                    </div>
+                    <h4 className="text-sm font-semibold text-white leading-snug">
+                      {item.title}
+                    </h4>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Location Info */}
+            <div className="mt-8 mx-4 p-4 bg-gradient-to-r from-purple-500/5 to-pink-500/5 border border-purple-500/10 rounded-xl text-center">
+              <p className="text-sm text-gray-400">
+                📍 <span className="font-semibold text-white">Jos-based Academy</span> • Hands-on projects & career support included
+              </p>
+            </div>
+          </div>
           
           <div className="mb-12 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
             <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
@@ -191,78 +291,130 @@ export default function Courses() {
                   </ul>
                 </div>
 
-                <div className="flex items-center justify-between pt-6 border-t border-white/10">
-                  <div>
-                    <div className="text-sm text-gray-500">Duration</div>
-                    <div className="text-lg font-semibold">{course.duration}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm text-gray-500">Price</div>
-                    <div className="text-2xl font-bold">{course.price}</div>
+                <div className="pt-6 border-t border-white/10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="text-sm text-gray-500">Duration</div>
+                      <div className="text-lg font-semibold">{course.duration}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-500">Application Fee</div>
+                      <div className="text-xl font-bold text-purple-400">₦5,000</div>
+                    </div>
                   </div>
                 </div>
 
-                <button className={`w-full mt-6 py-3 rounded-full font-semibold transition-all bg-gradient-to-r ${course.gradient} hover:opacity-90`}>
-                  Enroll Now
-                </button>
+                <a href="/apply" className={`block w-full mt-4 py-3 rounded-full font-semibold transition-all bg-gradient-to-r ${course.gradient} hover:opacity-90 text-center`}>
+                  Apply Now
+                </a>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* About the Program */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/10">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">WHY FORGE COURSES</p>
+            <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">INTENSIVE MENTORSHIP PROGRAM</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-              Learn From the Best
+              4-6 Month Journey to Mastery
             </h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              Our comprehensive program equips you with high-demand digital skills through practical, expert-led training at our Jos-based academy.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: "👨‍💻",
-                title: "Expert Instructors",
-                desc: "Learn from industry professionals with years of real-world experience"
+                icon: "👨‍🏫",
+                title: "Expert Mentorship",
+                desc: "Learn directly from industry professionals with years of real-world experience and practical insights"
               },
               {
-                icon: "🚀",
-                title: "Real Projects",
-                desc: "Build portfolio-worthy projects that showcase your skills to employers"
+                icon: "🎯",
+                title: "Hands-On Projects",
+                desc: "Build portfolio-worthy projects while working on real-world challenges and client work"
               },
               {
-                icon: "🎓",
-                title: "Certificates",
-                desc: "Earn recognized certificates upon completion to boost your career"
+                icon: "🏢",
+                title: "Physical & Hybrid Classes",
+                desc: "Attend classes at our Jos-based academy with flexible online options available"
+              },
+              {
+                icon: "📈",
+                title: "Personalized Learning",
+                desc: "Get customized learning paths tailored to your goals, pace, and experience level"
               },
               {
                 icon: "💼",
+                title: "Portfolio Development",
+                desc: "Build a professional portfolio that showcases your skills to potential employers"
+              },
+              {
+                icon: "🎓",
                 title: "Career Support",
-                desc: "Get job placement assistance and career guidance from our team"
+                desc: "Receive job placement assistance, interview prep, and ongoing career guidance"
+              },
+              {
+                icon: "💰",
+                title: "Flexible Payment Plans",
+                desc: "Choose from multiple payment options that fit your budget and schedule"
               },
               {
                 icon: "🤝",
-                title: "Community Access",
-                desc: "Join our thriving tech community and network with fellow learners"
+                title: "Community Network",
+                desc: "Join our thriving tech community and connect with peers, mentors, and industry professionals"
               },
               {
-                icon: "⚡",
-                title: "Lifetime Access",
-                desc: "Access course materials and updates for life after enrollment"
+                icon: "🏆",
+                title: "Recognized Certification",
+                desc: "Earn industry-recognized certificates that validate your skills and boost your career"
               }
             ].map((feature, idx) => (
               <div 
                 key={idx}
-                className="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all text-center"
+                className="group p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-purple-500/30 transition-all text-center"
               >
-                <div className="text-5xl mb-4">{feature.icon}</div>
+                <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform">{feature.icon}</div>
                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Location & Format */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/10">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl"></div>
+            <div className="relative p-10 bg-gradient-to-br from-white/10 to-white/5 border border-white/20 rounded-3xl backdrop-blur-sm">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-black mb-4">Jos-Based Academy</h3>
+                <p className="text-gray-400">Learn in person with hybrid options available</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="p-6 bg-black/30 rounded-2xl border border-white/10">
+                  <div className="text-3xl mb-3">🏫</div>
+                  <h4 className="text-lg font-bold mb-2">Physical Classes</h4>
+                  <p className="text-sm text-gray-400">
+                    Attend in-person sessions at our state-of-the-art facility in Jos with hands-on equipment and collaborative spaces.
+                  </p>
+                </div>
+                <div className="p-6 bg-black/30 rounded-2xl border border-white/10">
+                  <div className="text-3xl mb-3">💻</div>
+                  <h4 className="text-lg font-bold mb-2">Hybrid Learning</h4>
+                  <p className="text-sm text-gray-400">
+                    Can't attend in person? Join remotely with live sessions, recorded classes, and online mentorship support.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -279,16 +431,16 @@ export default function Courses() {
           </h2>
           
           <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
-            Join thousands of students who have launched successful tech careers through our comprehensive training programs.
+            Join thousands of students who have launched successful tech careers through our comprehensive 4-6 month intensive program.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl">
-              Browse All Courses
-            </button>
-            <button className="px-12 py-5 border border-white/30 rounded-full hover:bg-white/10 transition-all text-xl">
-              Talk to Advisor
-            </button>
+            <a href="/apply" className="px-12 py-5 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold rounded-full hover:opacity-90 transition-all transform hover:scale-105 text-xl">
+              Apply Now - ₦5,000
+            </a>
+            <a href="#courses" className="px-12 py-5 border border-white/30 rounded-full hover:bg-white/10 transition-all text-xl">
+              View All Courses
+            </a>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
@@ -297,12 +449,12 @@ export default function Courses() {
               <div className="text-sm text-gray-500">Students Trained</div>
             </div>
             <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
-              <div className="text-3xl font-bold text-pink-500 mb-1">95%</div>
-              <div className="text-sm text-gray-500">Completion Rate</div>
+              <div className="text-3xl font-bold text-pink-500 mb-1">8</div>
+              <div className="text-sm text-gray-500">Available Courses</div>
             </div>
             <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
-              <div className="text-3xl font-bold text-cyan-500 mb-1">4.8/5</div>
-              <div className="text-sm text-gray-500">Average Rating</div>
+              <div className="text-3xl font-bold text-cyan-500 mb-1">4-6</div>
+              <div className="text-sm text-gray-500">Months Duration</div>
             </div>
           </div>
         </div>

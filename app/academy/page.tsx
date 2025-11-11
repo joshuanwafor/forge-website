@@ -78,16 +78,16 @@ export default function Academy() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
             <a href="/apply" className="group relative px-10 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-full transition-all transform hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 text-lg overflow-hidden">
               <span className="relative z-10 flex items-center gap-2">
-                Apply
+                Apply Now
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
             </a>
-            <a href="/waitlist" className="group px-10 py-4 border-2 border-white/30 rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-lg backdrop-blur-sm font-semibold relative overflow-hidden inline-block">
+            <a href="/courses" className="group px-10 py-4 border-2 border-white/30 rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-lg backdrop-blur-sm font-semibold relative overflow-hidden inline-block">
               <span className="relative z-10 flex items-center gap-2">
-                Join Waitlist
+                View Courses
                 <svg className="w-5 h-5 group-hover:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -288,8 +288,8 @@ export default function Academy() {
             <a href="/apply" className="inline-block px-12 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 text-xl">
               APPLY NOW
             </a>
-            <a href="/waitlist" className="inline-block px-12 py-5 border-2 border-white/30 font-bold rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-xl">
-              JOIN WAITLIST
+            <a href="/courses" className="inline-block px-12 py-5 border-2 border-white/30 font-bold rounded-full hover:bg-white/10 hover:border-white/50 transition-all text-xl">
+              VIEW COURSES
             </a>
           </div>
 

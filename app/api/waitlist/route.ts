@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseServer } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,6 +12,26 @@ export async function POST(request: NextRequest) {
         { error: 'Missing required fields' },
         { status: 400 }
       );
+    }
+
+    // Save to Supabase (using service role to bypass RLS)
+    const { data: supabaseData, error: supabaseError } = await supabaseServer
+      .from('waitlist')
+      .insert([
+        {
+          full_name: fullName,
+          email: email,
+          phone: phone || null,
+          interest: interest,
+          referral: referral || null,
+          message: message || null
+        }
+      ])
+      .select();
+
+    if (supabaseError) {
+      console.error('Supabase error:', supabaseError);
+      // Continue even if Supabase fails - we still want to add to Zoho
     }
 
     // Zoho Campaign Configuration
@@ -65,9 +86,6 @@ export async function POST(request: NextRequest) {
         // Continue even if Zoho fails
       }
     }
-
-    // TODO: Also save to your database here
-    // await db.waitlist.create({ fullName, email, phone, interest, referral, message });
 
     // Send confirmation email (optional)
     // await sendEmail({ to: email, template: 'waitlist-confirmation' });

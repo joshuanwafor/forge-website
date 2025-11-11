@@ -1,8 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { usePaystackPayment } from "react-paystack";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+// Application fee (same for all courses)
+const APPLICATION_FEE = 500000; // ₦5,000 in kobo
+
+const COURSE_NAMES: Record<string, string> = {
+  "web-development": "Web Development",
+  "mobile-development": "Mobile Development",
+  "backend-development": "Backend Development",
+  "frontend-development": "Frontend Development",
+  "design-mastery": "Design Mastery",
+  "digital-marketing": "Digital Marketing & Strategy",
+  "wordpress": "WordPress Training",
+  "advanced-ai": "Advanced AI"
+};
 
 export default function Apply() {
   const [formData, setFormData] = useState({
@@ -19,6 +34,7 @@ export default function Apply() {
   const [progress, setProgress] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   const updateProgress = () => {
     const requiredFields = [
@@ -42,8 +58,9 @@ export default function Apply() {
     setTimeout(updateProgress, 0);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Handle successful payment
+  const onPaymentSuccess = async (reference: any) => {
+    console.log('Payment successful:', reference);
     setIsSubmitting(true);
     
     try {
@@ -52,7 +69,12 @@ export default function Apply() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          paymentReference: reference.reference,
+          paymentStatus: 'success',
+          amountPaid: APPLICATION_FEE / 100 // ₦5,000
+        }),
       });
 
       const result = await response.json();
@@ -61,14 +83,66 @@ export default function Apply() {
         setIsSubmitted(true);
       } else {
         console.error('Submission failed:', result.error);
-        alert('Failed to submit. Please try again.');
+        alert('Payment successful but failed to save application. Please contact support with reference: ' + reference.reference);
       }
     } catch (error) {
       console.error('Submission error:', error);
-      alert('An error occurred. Please try again.');
+      alert('Payment successful but failed to save application. Please contact support with reference: ' + reference.reference);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Handle payment close/cancel
+  const onPaymentClose = () => {
+    console.log('Payment closed');
+    setShowPayment(false);
+  };
+
+  // Paystack configuration
+  const paystackConfig = {
+    reference: new Date().getTime().toString(),
+    email: formData.email,
+    amount: APPLICATION_FEE,
+    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_xxxxxxxxxxxxxxxx',
+    metadata: {
+      custom_fields: [
+        {
+          display_name: 'Full Name',
+          variable_name: 'full_name',
+          value: formData.fullName
+        },
+        {
+          display_name: 'Course',
+          variable_name: 'course',
+          value: formData.courseOfInterest
+        },
+        {
+          display_name: 'Phone',
+          variable_name: 'phone',
+          value: formData.phone
+        },
+        {
+          display_name: 'Fee Type',
+          variable_name: 'fee_type',
+          value: 'Application Fee'
+        }
+      ]
+    }
+  };
+
+  // Initialize Paystack
+  const initializePayment = usePaystackPayment(paystackConfig);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Show payment modal with callbacks
+    setShowPayment(true);
+    initializePayment({
+      onSuccess: onPaymentSuccess,
+      onClose: onPaymentClose
+    } as any);
   };
 
   if (isSubmitted) {
@@ -93,26 +167,58 @@ export default function Apply() {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-black mb-4 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
-              Application Submitted! 🎉
+              Application Fee Paid! 🎉
             </h1>
 
             <p className="text-xl text-gray-400 mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-              Thank you for applying! Our team will review your application and get back to you within 48 hours.
+              Your application has been received. Our team will contact you within 24 hours with course details, full pricing, and next steps.
             </p>
 
-            <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm mb-8 animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
-              <p className="text-sm text-gray-400 mb-2">Confirmation sent to:</p>
-              <p className="text-lg font-semibold text-white">{formData.email}</p>
+            <div className="space-y-4 mb-8">
+              <div className="p-6 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl backdrop-blur-sm animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+                <p className="text-sm text-green-400 mb-2">Application Fee Paid:</p>
+                <p className="text-3xl font-black text-white">₦5,000</p>
+              </div>
+
+              <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm animate-fadeInUp" style={{ animationDelay: '0.35s' }}>
+                <p className="text-sm text-gray-400 mb-2">Course Applied For:</p>
+                <p className="text-lg font-semibold text-white">
+                  {formData.courseOfInterest ? COURSE_NAMES[formData.courseOfInterest] : 'N/A'}
+                </p>
+              </div>
+              
+              <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+                <p className="text-sm text-gray-400 mb-2">Confirmation sent to:</p>
+                <p className="text-lg font-semibold text-white">{formData.email}</p>
+              </div>
+
+              <div className="p-6 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl animate-fadeInUp" style={{ animationDelay: '0.45s' }}>
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-semibold text-cyan-400 mb-1">What's Next?</p>
+                    <p className="text-xs text-gray-400">
+                      Our team will contact you within 24 hours via email and phone with full course details, pricing, and enrollment instructions.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
-              <a href="/courses" className="px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all">
-                View Courses
+              <a href="/courses" className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-full hover:opacity-90 transition-all">
+                View All Courses
               </a>
               <a href="/" className="px-8 py-3 border border-white/30 rounded-full hover:bg-white/10 transition-all">
                 Go Home
               </a>
             </div>
+            
+            <p className="text-sm text-gray-500 mt-8 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+              📧 Check your email for payment receipt. We'll contact you within 24 hours!
+            </p>
           </div>
         </section>
 
@@ -144,7 +250,7 @@ export default function Apply() {
           </h1>
           
           <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Fill out the form below to apply for one of our professional training programs.
+            Pay ₦5,000 application fee. You'll be contacted within 24 hours with full course details and pricing.
           </p>
 
           {/* Progress Bar */}
@@ -271,8 +377,30 @@ export default function Apply() {
                     <option value="web-development" className="bg-black">Web Development</option>
                     <option value="mobile-development" className="bg-black">Mobile Development</option>
                     <option value="backend-development" className="bg-black">Backend Development</option>
-                    <option value="design" className="bg-black">Design (UI/UX)</option>
+                    <option value="frontend-development" className="bg-black">Frontend Development</option>
+                    <option value="design-mastery" className="bg-black">Design Mastery (Graphic, UI/UX, 3D, Illustration)</option>
+                    <option value="digital-marketing" className="bg-black">Digital Marketing & Strategy</option>
+                    <option value="wordpress" className="bg-black">WordPress Training</option>
+                    <option value="advanced-ai" className="bg-black">Advanced AI</option>
                   </select>
+                  
+                  {formData.courseOfInterest && (
+                    <div className="mt-3 p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">Application Fee</p>
+                          <p className="text-2xl font-bold text-orange-400">₦5,000</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-400 mb-1">Selected Course</p>
+                          <p className="text-sm font-semibold text-white">{COURSE_NAMES[formData.courseOfInterest]}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-3">
+                        ℹ️ Pay application fee now. Full course details and payment will be shared within 24 hours.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Why Interested */}
@@ -333,30 +461,44 @@ export default function Apply() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Submitting...
+                    Processing...
                   </span>
                 ) : progress === 100 ? (
                   <>
                     <span className="relative z-10 flex items-center gap-2 justify-center">
-                      Submit Application
+                      Pay Application Fee
+                      <span className="ml-2 px-3 py-1 bg-white/20 rounded-full text-sm font-bold">
+                        ₦5,000
+                      </span>
                       <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-full"></div>
                   </>
                 ) : (
-                  "Complete All Fields to Submit"
+                  "Complete All Fields to Continue"
                 )}
               </button>
 
-              <p className="text-xs text-gray-500 mt-4">
-                By submitting this application, you agree to our{" "}
-                <a href="#" className="text-orange-400 hover:text-orange-300 underline">
-                  terms and conditions
-                </a>
-                .
-              </p>
+              <div className="mt-4 p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-xl space-y-2">
+                <p className="text-sm text-cyan-400 font-semibold flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Application Fee: ₦5,000
+                </p>
+                <p className="text-xs text-gray-400">
+                  Pay the application fee now. You'll be contacted within 24 hours with full course details and payment information.
+                </p>
+                <p className="text-xs text-gray-500 pt-2 border-t border-white/10">
+                  By proceeding, you agree to our{" "}
+                  <a href="#" className="text-orange-400 hover:text-orange-300 underline">
+                    terms and conditions
+                  </a>
+                  .
+                </p>
+              </div>
             </div>
           </form>
         </div>
