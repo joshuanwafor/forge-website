@@ -34,6 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="icon" href="/gotoforge.svg" />
+      </head>
       <body
         className={`${inter.variable} antialiased`}
       >
