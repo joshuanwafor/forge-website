@@ -1,111 +1,69 @@
-# Environment Setup
+# Environment setup
 
-## Supabase Database Setup
+Copy `.env.example` to `.env.local` and fill in the values below.
 
-### 1. Create Supabase Project
+## Supabase (required for forms)
 
-1. Go to [https://supabase.com](https://supabase.com) and create a free account
-2. Create a new project
-3. Wait for the database to be ready (takes ~2 minutes)
+Without Supabase the site still builds and runs — the form endpoints return a 503 with a
+readable message rather than failing.
 
-### 2. Set Up Database Tables
+### 1. Create the project
 
-1. In your Supabase dashboard, go to **SQL Editor**
-2. Copy the contents of `lib/supabase-schema.sql`
-3. Paste and run the SQL commands to create tables:
-   - `waitlist` - Stores waitlist signups
-   - `course_applications` - Stores course applications
+1. Sign up at [supabase.com](https://supabase.com) and create a project.
+2. Wait for the database to finish provisioning (~2 minutes).
 
-### 3. Get Supabase Credentials
+### 2. Create the tables
 
-1. Go to **Project Settings** > **API**
-2. Copy your:
-   - **Project URL** (NEXT_PUBLIC_SUPABASE_URL)
-   - **Anon/Public Key** (NEXT_PUBLIC_SUPABASE_ANON_KEY)
-   - **Service Role Key** (SUPABASE_SERVICE_ROLE_KEY) - **Keep this secret!**
+**New project:** open **SQL Editor**, paste the whole of `lib/supabase-schema.sql`, and run it.
+That creates `waitlist`, `tour_requests` and `newsletter_subscribers`, their indexes, and RLS
+policies.
 
-## Zoho Campaign Integration (Optional)
+**Existing project** that already had the old course tables: run
+`lib/migrations/2026-09-remove-courses.sql` instead. It only adds — the old
+`course_applications` table is deliberately left in place so you can export it first.
 
-To also sync form submissions to Zoho Campaign for email marketing:
+### 3. Copy the credentials
 
-### Get Zoho Credentials
+**Project Settings → API**:
 
-1. **Auth Token**: 
-   - Go to https://www.zoho.com/campaigns/
-   - Navigate to Settings > API
-   - Generate your API auth token
+| Value | Environment variable |
+| --- | --- |
+| Project URL | `NEXT_PUBLIC_SUPABASE_URL` |
+| `anon` public key | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| `service_role` key | `SUPABASE_SERVICE_ROLE_KEY` |
 
-2. **List Keys**:
-   - Go to your Zoho Campaign dashboard
-   - Navigate to Contacts > Mailing Lists
-   - Create two lists: "Waitlist" and "Academy Applications"
-   - Copy the list keys from each list settings
+The service-role key bypasses Row Level Security. It is used only in the server-side API routes
+and must never reach the browser or a public repository.
 
-## Paystack Payment Integration
+### How writes work
 
-### Get Paystack API Keys
+Every insert happens in an API route using the service-role key, so no anonymous `INSERT`
+policy is needed. The RLS policies in the schema grant `SELECT` to authenticated users only, so
+your team can read submissions from the Supabase dashboard while the public cannot.
 
-1. Create account at [https://paystack.com](https://paystack.com)
-2. Go to **Settings** > **API Keys & Webhooks**
-3. Copy your:
-   - **Public Key** (for client-side)
-   - **Secret Key** (for server-side verification)
-4. Use test keys for development (starts with `pk_test_`)
-5. Switch to live keys for production (starts with `pk_live_`)
+## Zoho Campaigns (optional)
 
-## Environment Variables
+When these are set, new sign-ups are also pushed to a Zoho mailing list. When they are unset the
+sync is skipped silently — and if Zoho fails, the visitor's submission still succeeds.
 
-Create a `.env.local` file in the root directory:
+1. **Auth token** — Zoho Campaigns → Settings → API → generate a token.
+2. **List keys** — Contacts → Mailing Lists. Create the lists you want, then copy each list key.
 
-```env
-# Supabase Configuration (REQUIRED)
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+| Variable | List |
+| --- | --- |
+| `ZOHO_AUTH_TOKEN` | — |
+| `ZOHO_API_URL` | Defaults to `https://campaigns.zoho.com/api/v1.1` |
+| `ZOHO_WAITLIST_KEY` | Waitlist sign-ups |
+| `ZOHO_TOUR_LIST_KEY` | Tour requests |
+| `ZOHO_NEWSLETTER_KEY` | Newsletter subscribers |
 
-# Paystack Configuration (REQUIRED for course payments)
-NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_xxxxxxxxxxxxxxxx
-PAYSTACK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxx
+## Site URL
 
-# Zoho Campaign API Configuration (OPTIONAL)
-ZOHO_AUTH_TOKEN=your_zoho_auth_token_here
-ZOHO_API_URL=https://campaigns.zoho.com/api/v1.1
-ZOHO_WAITLIST_KEY=your_waitlist_list_key_here
-ZOHO_ACADEMY_LIST_KEY=your_academy_list_key_here
-```
+`NEXT_PUBLIC_SITE_URL` must be the canonical origin (no trailing slash). It is used for
+canonical tags, `sitemap.xml`, the RSS feed and social card URLs. Getting this wrong mostly
+shows up as bad links in search results and feed readers.
 
-## Testing Forms
+## Deployment
 
-- **Waitlist Form**: http://localhost:3000/waitlist
-- **Application Form**: http://localhost:3000/apply
-
-### What Happens When Forms are Submitted:
-
-**Waitlist Form:**
-1. ✅ **Data saved to Supabase** (always, required)
-2. ✅ **Synced to Zoho Campaign** (optional, if configured)
-3. ✅ **Success screen shown** to user
-
-**Course Application Form:**
-1. 💳 **Paystack payment modal opens**
-2. ✅ **Payment processed** (required)
-3. ✅ **Data saved to Supabase** (only after successful payment)
-4. ✅ **Synced to Zoho Campaign** (optional, if configured)
-5. ✅ **Success screen shown** to user
-
-## Course Fees
-
-### Application Fee
-**₦5,000** - Required for all course applications (paid upfront)
-
-### Full Course Fee
-**₦100,000** - All courses (4-6 months intensive program) **- DISCOUNTED PRICE**
-
-After application payment:
-- Application saved to database
-- Team contacts you within 24 hours
-- Full course details and payment plans provided
-- Enrollment process begins
-
-**Note:** The ₦100,000 course fee is a special discounted rate for our intensive mentorship program.
-
+Add the same variables in your host's project settings. Do not commit real values to
+`.env.production` — anything in the repository is readable by anyone who can clone it.

@@ -1,95 +1,74 @@
--- Supabase Database Schema for Forge Website
--- Run these SQL commands in your Supabase SQL Editor
+-- Supabase schema for the Forge website.
+-- Run in the Supabase SQL editor on a fresh project.
+--
+-- Every write goes through the service-role key in an API route, so RLS is
+-- enabled and no anon policies are granted. The service role bypasses RLS.
 
--- Table: waitlist
--- Stores waitlist signups
+-- ---------------------------------------------------------------------------
+-- waitlist — people who want a desk when one frees up
+-- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS waitlist (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  full_name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  phone VARCHAR(50),
-  interest VARCHAR(100) NOT NULL,
-  referral VARCHAR(100),
-  message TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name  VARCHAR(255) NOT NULL,
+  email      VARCHAR(255) NOT NULL UNIQUE,
+  phone      VARCHAR(50),
+  interest   VARCHAR(100) NOT NULL,
+  referral   VARCHAR(100),
+  message    TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Index for faster email lookups
-CREATE INDEX IF NOT EXISTS idx_waitlist_email ON waitlist(email);
+CREATE INDEX IF NOT EXISTS idx_waitlist_created ON waitlist (created_at DESC);
 
--- Index for created_at to sort by date
-CREATE INDEX IF NOT EXISTS idx_waitlist_created ON waitlist(created_at DESC);
-
--- Table: course_applications
--- Stores course application submissions with payment info
-CREATE TABLE IF NOT EXISTS course_applications (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  full_name VARCHAR(255) NOT NULL,
-  location VARCHAR(255) NOT NULL,
-  gender VARCHAR(50) NOT NULL,
-  phone VARCHAR(50) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  course_of_interest VARCHAR(100) NOT NULL,
-  why_interested TEXT NOT NULL,
-  availability VARCHAR(100) NOT NULL,
-  payment_reference VARCHAR(255) NOT NULL,
-  payment_status VARCHAR(50) NOT NULL DEFAULT 'success',
-  amount_paid DECIMAL(10, 2) NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- ---------------------------------------------------------------------------
+-- tour_requests — visit bookings from /tour
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS tour_requests (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name      VARCHAR(255) NOT NULL,
+  email          VARCHAR(255) NOT NULL,
+  phone          VARCHAR(50),
+  team_size      VARCHAR(20),
+  interest       VARCHAR(100) NOT NULL,
+  preferred_date DATE NOT NULL,
+  preferred_time VARCHAR(60) NOT NULL,
+  message        TEXT,
+  status         VARCHAR(20) NOT NULL DEFAULT 'new'
+                 CHECK (status IN ('new', 'confirmed', 'completed', 'cancelled')),
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Index for email
-CREATE INDEX IF NOT EXISTS idx_applications_email ON course_applications(email);
+-- The front desk reads this as "upcoming tours still to confirm".
+CREATE INDEX IF NOT EXISTS idx_tour_requests_date ON tour_requests (preferred_date, status);
+CREATE INDEX IF NOT EXISTS idx_tour_requests_created ON tour_requests (created_at DESC);
 
--- Index for created_at
-CREATE INDEX IF NOT EXISTS idx_applications_created ON course_applications(created_at DESC);
+-- ---------------------------------------------------------------------------
+-- newsletter_subscribers — blog / footer sign-ups
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email      VARCHAR(255) NOT NULL UNIQUE,
+  source     VARCHAR(40) NOT NULL DEFAULT 'website',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
--- Index for course_of_interest (to filter by course)
-CREATE INDEX IF NOT EXISTS idx_applications_course ON course_applications(course_of_interest);
+-- ---------------------------------------------------------------------------
+-- Row level security
+-- ---------------------------------------------------------------------------
+ALTER TABLE waitlist               ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tour_requests          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 
--- Index for payment_reference (for lookup and verification)
-CREATE INDEX IF NOT EXISTS idx_applications_payment ON course_applications(payment_reference);
+-- Reads are for signed-in staff only. Inserts happen server-side with the
+-- service-role key, which is not subject to these policies.
+DROP POLICY IF EXISTS waitlist_select_policy ON waitlist;
+CREATE POLICY waitlist_select_policy ON waitlist
+  FOR SELECT TO authenticated USING (true);
 
--- Enable Row Level Security (RLS)
-ALTER TABLE waitlist ENABLE ROW LEVEL SECURITY;
-ALTER TABLE course_applications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS tour_requests_select_policy ON tour_requests;
+CREATE POLICY tour_requests_select_policy ON tour_requests
+  FOR SELECT TO authenticated USING (true);
 
--- Drop existing policies if they exist
-DROP POLICY IF EXISTS "Enable insert for everyone" ON waitlist;
-DROP POLICY IF EXISTS "Enable read for authenticated users only" ON waitlist;
-DROP POLICY IF EXISTS "Enable insert for everyone" ON course_applications;
-DROP POLICY IF EXISTS "Enable read for authenticated users only" ON course_applications;
-
--- RLS Policies for waitlist (allow insert from anyone, read only for authenticated users)
-CREATE POLICY "waitlist_insert_policy" ON waitlist
-  FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "waitlist_select_policy" ON waitlist
-  FOR SELECT USING (auth.role() = 'authenticated');
-
--- RLS Policies for course_applications (allow insert from anyone, read only for authenticated users)
-CREATE POLICY "applications_insert_policy" ON course_applications
-  FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "applications_select_policy" ON course_applications
-  FOR SELECT USING (auth.role() = 'authenticated');
-
--- Optional: Create a view for analytics (requires authentication)
-CREATE OR REPLACE VIEW waitlist_stats AS
-SELECT 
-  interest,
-  COUNT(*) as count,
-  DATE_TRUNC('day', created_at) as signup_date
-FROM waitlist
-GROUP BY interest, DATE_TRUNC('day', created_at)
-ORDER BY signup_date DESC;
-
-CREATE OR REPLACE VIEW application_stats AS
-SELECT 
-  course_of_interest,
-  COUNT(*) as count,
-  DATE_TRUNC('day', created_at) as application_date
-FROM course_applications
-GROUP BY course_of_interest, DATE_TRUNC('day', created_at)
-ORDER BY application_date DESC;
-
+DROP POLICY IF EXISTS newsletter_select_policy ON newsletter_subscribers;
+CREATE POLICY newsletter_select_policy ON newsletter_subscribers
+  FOR SELECT TO authenticated USING (true);
