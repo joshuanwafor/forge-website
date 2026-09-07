@@ -183,7 +183,7 @@ export default function Home() {
                   delay={i * 70}
                   className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/8 p-6 transition-colors hover:border-white/20 ${
                     space.featured
-                      ? "bg-gradient-to-br from-ember-600/12 via-white/[0.03] to-transparent lg:col-span-2 lg:row-span-2 lg:p-8"
+                      ? "bg-gradient-to-br from-ember-500/12 via-white/[0.03] to-transparent lg:col-span-2 lg:row-span-2 lg:p-8"
                       : "bg-white/[0.02] hover:bg-white/[0.045]"
                   }`}
                 >
@@ -229,7 +229,7 @@ export default function Home() {
                 className="flex shrink-0 items-center gap-10 font-mono text-sm uppercase tracking-[0.14em] text-ink-400"
               >
                 {item}
-                <span aria-hidden="true" className="text-ember-600/60">
+                <span aria-hidden="true" className="text-ember-500/60">
                   ✦
                 </span>
               </span>
@@ -346,7 +346,7 @@ export default function Home() {
             <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.07] to-transparent px-6 py-16 text-center sm:px-12 sm:py-20">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-0 h-64 w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-600/20 blur-[110px]"
+                className="pointer-events-none absolute left-1/2 top-0 h-64 w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-500/18 blur-[110px]"
               />
 
               <div className="relative">

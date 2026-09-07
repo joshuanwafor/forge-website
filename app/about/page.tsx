@@ -158,7 +158,7 @@ export default function AboutPage() {
             <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.07] to-transparent px-6 py-14 text-center sm:px-12 sm:py-16">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-0 h-56 w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-600/20 blur-[110px]"
+                className="pointer-events-none absolute left-1/2 top-0 h-56 w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-500/18 blur-[110px]"
               />
               <div className="relative">
                 <h2 className="mx-auto max-w-xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">

@@ -53,7 +53,7 @@ export default function NewsletterForm({ compact = false }: { compact?: boolean 
         <button
           type="submit"
           disabled={status === "loading"}
-          className="group inline-flex items-center justify-center gap-2 rounded-full bg-ember-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ember-400 disabled:opacity-60"
+          className="group inline-flex items-center justify-center gap-2 rounded-full bg-ember-400 px-6 py-3 text-sm font-semibold text-ink-950 transition-colors hover:bg-ember-300 disabled:opacity-60"
         >
           {status === "loading" ? "Subscribing…" : "Subscribe"}
           {status === "loading" ? null : <ArrowIcon />}

@@ -12,18 +12,20 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // Warm accent — the "heat" of the forge. Used for emphasis, never for body text.
+        // Brand accent — the yellow of metal at working heat. Emphasis only,
+        // never body text. Solid fills use 400 with ink-950 text: white on
+        // yellow is around 1.9:1, dark on yellow is over 12:1.
         ember: {
-          50: "#fff4ed",
-          100: "#ffe6d5",
-          200: "#ffc9aa",
-          300: "#ffa474",
-          400: "#ff7a3c",
-          500: "#ff5a0f",
-          600: "#f03e00",
-          700: "#c72d04",
-          800: "#9e260c",
-          900: "#7f220d",
+          50: "#fefce8",
+          100: "#fef7c3",
+          200: "#feee95",
+          300: "#fde047",
+          400: "#facc15",
+          500: "#eab308",
+          600: "#ca8a04",
+          700: "#a16207",
+          800: "#854d0e",
+          900: "#713f12",
         },
         // Neutral ramp. Slightly cool so the ember reads warmer against it.
         ink: {
@@ -56,8 +58,14 @@ const config: Config = {
       // and tinted surfaces in this design need the values in between.
       opacity: {
         8: "0.08",
+        9: "0.09",
         12: "0.12",
+        14: "0.14",
         15: "0.15",
+        16: "0.16",
+        18: "0.18",
+        22: "0.22",
+        24: "0.24",
         35: "0.35",
         45: "0.45",
         65: "0.65",
@@ -71,7 +79,7 @@ const config: Config = {
         "4xl": "2rem",
       },
       boxShadow: {
-        glow: "0 0 60px -12px rgb(255 90 15 / 0.45)",
+        glow: "0 0 60px -12px rgb(250 204 21 / 0.4)",
         lift: "0 24px 60px -24px rgb(0 0 0 / 0.9)",
       },
       keyframes: {
@@ -106,15 +114,15 @@ const config: Config = {
           css: {
             "--tw-prose-invert-body": "#b0b0ba",
             "--tw-prose-invert-headings": "#ffffff",
-            "--tw-prose-invert-links": "#ff7a3c",
+            "--tw-prose-invert-links": "#facc15",
             "--tw-prose-invert-bold": "#ffffff",
             "--tw-prose-invert-counters": "#85858f",
             "--tw-prose-invert-bullets": "#4a4a53",
             "--tw-prose-invert-hr": "#212127",
             "--tw-prose-invert-quotes": "#ededf0",
-            "--tw-prose-invert-quote-borders": "#ff5a0f",
+            "--tw-prose-invert-quote-borders": "#eab308",
             "--tw-prose-invert-captions": "#85858f",
-            "--tw-prose-invert-code": "#ffc9aa",
+            "--tw-prose-invert-code": "#feee95",
             "--tw-prose-invert-pre-code": "#d6d6dc",
             "--tw-prose-invert-pre-bg": "#0a0a0c",
             "--tw-prose-invert-th-borders": "#35353c",

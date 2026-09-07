@@ -75,8 +75,10 @@ Everything that reads the content lives in [`lib/blog.ts`](lib/blog.ts).
 
 Tokens live in `tailwind.config.ts` and `app/globals.css`.
 
-- **Colour** — `ink` (neutral ramp, `ink-950` is the page) and `ember` (the single warm accent).
-  Accent is for emphasis only; body copy is always from the `ink` ramp.
+- **Colour** — `ink` (neutral ramp, `ink-950` is the page) and `ember` (the brand yellow, the
+  single accent). Accent is for emphasis only; body copy is always from the `ink` ramp. Solid
+  yellow fills take `text-ink-950` — white on yellow is about 1.9:1. Ambient glows are amber
+  rather than yellow, because yellow thinned out over near-black reads olive.
 - **Type** — Space Grotesk for display (`font-display`), Inter for body, JetBrains Mono for
   labels and metadata (`font-mono`).
 - **Motion** — one shared `Reveal` component (`components/ui/Reveal.tsx`) and two slow ambient

@@ -47,7 +47,7 @@ export function FeaturedPostCard({ post }: { post: PostMeta }) {
     <article className="group relative overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.06] to-transparent p-8 transition-colors hover:border-white/15 sm:p-12">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-ember-600/15 blur-[100px] opacity-80 transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-ember-500/14 blur-[100px] opacity-80 transition-opacity duration-500 group-hover:opacity-100"
       />
 
       <div className="relative">

@@ -111,7 +111,7 @@ export default function BlogIndex() {
             <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.06] to-transparent p-8 sm:p-12">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-ember-600/15 blur-[100px]"
+                className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-ember-500/14 blur-[100px]"
               />
               <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
                 <div>

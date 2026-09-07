@@ -92,7 +92,7 @@
   }
 
   .text-gradient-ember {
-    @apply bg-gradient-to-br from-ember-200 via-ember-400 to-ember-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-br from-ember-100 via-ember-300 to-ember-500 bg-clip-text text-transparent;
   }
 
   /* Fine engineering grid, masked to fade out toward the edges. */
@@ -174,11 +174,11 @@
 .hljs-title,
 .hljs-section,
 .hljs-name {
-  @apply text-amber-200;
+  @apply text-violet-300;
 }
 .hljs-built_in,
 .hljs-class .hljs-title {
-  @apply text-violet-300;
+  @apply text-rose-300;
 }
 .hljs-variable,
 .hljs-template-variable,

@@ -178,7 +178,7 @@ export default function Pricing() {
                 className={cn(
                   "absolute -top-2.5 left-6 rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider",
                   plan.highlight
-                    ? "bg-ember-500 text-white"
+                    ? "bg-ember-400 text-ink-950"
                     : "border border-white/15 bg-ink-900 text-ink-300"
                 )}
               >

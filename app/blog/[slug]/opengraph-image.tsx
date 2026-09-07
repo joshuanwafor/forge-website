@@ -35,7 +35,7 @@ export default async function OpengraphImage({
           justifyContent: "space-between",
           backgroundColor: "#0a0a0c",
           backgroundImage:
-            "radial-gradient(circle at 82% 12%, rgba(255,90,15,0.42) 0%, rgba(255,90,15,0) 55%)",
+            "radial-gradient(circle at 82% 12%, rgba(245,158,11,0.38) 0%, rgba(245,158,11,0) 55%)",
           padding: "72px",
         }}
       >
@@ -45,7 +45,7 @@ export default async function OpengraphImage({
               width: "14px",
               height: "14px",
               borderRadius: "9999px",
-              backgroundColor: "#ff5a0f",
+              backgroundColor: "#facc15",
             }}
           />
           {/* Satori needs every multi-child node to declare a display mode, so
@@ -86,7 +86,7 @@ export default async function OpengraphImage({
           }}
         >
           <div style={{ color: "#85858f", fontSize: "26px" }}>{meta}</div>
-          <div style={{ color: "#ff7a3c", fontSize: "26px" }}>
+          <div style={{ color: "#facc15", fontSize: "26px" }}>
             {site.url.replace(/^https?:\/\//, "")}
           </div>
         </div>
