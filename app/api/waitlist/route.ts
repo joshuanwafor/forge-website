@@ -1,110 +1,75 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase-server';
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase-server";
+import { clean, isValidEmail, splitName, syncToZoho } from "@/lib/leads";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { fullName, email, phone, interest, referral, message } = body;
 
-    // Validate required fields
-    if (!fullName || !email || !interest) {
+    const fullName = clean(body.fullName, 120);
+    const email = clean(body.email, 200).toLowerCase();
+    const interest = clean(body.interest, 80);
+    const phone = clean(body.phone, 40);
+    const referral = clean(body.referral, 80);
+    const message = clean(body.message, 2000);
+
+    if (!fullName || !interest) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Please fill in your name and what you're looking for." },
         { status: 400 }
       );
     }
 
-    // Save to Supabase (using service role to bypass RLS)
-    const { data: supabaseData, error: supabaseError } = await supabaseServer
-      .from('waitlist')
-      .insert([
-        {
-          full_name: fullName,
-          email: email,
-          phone: phone || null,
-          interest: interest,
-          referral: referral || null,
-          message: message || null
-        }
-      ])
-      .select();
-
-    if (supabaseError) {
-      console.error('Supabase error:', supabaseError);
-      // Continue even if Supabase fails - we still want to add to Zoho
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: "That email address doesn't look right." }, { status: 400 });
     }
 
-    // Zoho Campaign Configuration
-    const ZOHO_API_URL = process.env.ZOHO_API_URL || 'https://campaigns.zoho.com/api/v1.1';
-    const ZOHO_AUTH_TOKEN = process.env.ZOHO_AUTH_TOKEN;
-    const ZOHO_LIST_KEY = process.env.ZOHO_WAITLIST_KEY;
+    const supabase = getSupabaseServer();
 
-    if (!ZOHO_AUTH_TOKEN || !ZOHO_LIST_KEY) {
-      console.error('Zoho credentials not configured');
-      // Still save to database/log even if Zoho fails
+    if (!supabase) {
+      console.error("Supabase is not configured — waitlist entry was not stored.");
+      return NextResponse.json(
+        { error: "Sign-ups are temporarily unavailable. Please email us instead." },
+        { status: 503 }
+      );
     }
 
-    // Prepare data for Zoho Campaign
-    const contactInfo = JSON.stringify({
-      'Contact Email': email,
-      'First Name': fullName.split(' ')[0] || fullName,
-      'Last Name': fullName.split(' ').slice(1).join(' ') || '',
-      'Phone': phone || '',
-      'Interest': interest,
-      'Referral Source': referral || 'Unknown',
-      'Message': message || '',
-      'Signup Date': new Date().toISOString(),
-      'Source': 'Website Waitlist'
+    const { error } = await supabase.from("waitlist").insert([
+      {
+        full_name: fullName,
+        email,
+        phone: phone || null,
+        interest,
+        referral: referral || null,
+        message: message || null,
+      },
+    ]);
+
+    if (error) {
+      // A repeat sign-up is a success from the visitor's point of view.
+      if (error.code === "23505") {
+        return NextResponse.json({ success: true, message: "Already on the waitlist" });
+      }
+      console.error("Supabase waitlist insert failed:", error);
+      return NextResponse.json({ error: "We couldn't save that. Please try again." }, { status: 500 });
+    }
+
+    const { firstName, lastName } = splitName(fullName);
+    await syncToZoho(process.env.ZOHO_WAITLIST_KEY, {
+      "Contact Email": email,
+      "First Name": firstName,
+      "Last Name": lastName,
+      Phone: phone,
+      Interest: interest,
+      "Referral Source": referral || "Unknown",
+      Message: message,
+      "Signup Date": new Date().toISOString(),
+      Source: "Website Waitlist",
     });
 
-    // Add to Zoho Campaign
-    if (ZOHO_AUTH_TOKEN && ZOHO_LIST_KEY) {
-      try {
-        const params: Record<string, string> = {
-          authtoken: ZOHO_AUTH_TOKEN,
-          scope: 'CampaignsAPI',
-          listkey: ZOHO_LIST_KEY,
-          contactinfo: contactInfo,
-          resfmt: 'JSON'
-        };
-
-        const zohoResponse = await fetch(`${ZOHO_API_URL}/json/listsubscribe`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams(params).toString()
-        });
-
-        const zohoResult = await zohoResponse.json();
-        
-        if (zohoResult.status === 'error') {
-          console.error('Zoho API Error:', zohoResult);
-        }
-      } catch (zohoError) {
-        console.error('Zoho Campaign error:', zohoError);
-        // Continue even if Zoho fails
-      }
-    }
-
-    // Send confirmation email (optional)
-    // await sendEmail({ to: email, template: 'waitlist-confirmation' });
-
-    return NextResponse.json(
-      { 
-        success: true, 
-        message: 'Successfully added to waitlist',
-        data: { email }
-      },
-      { status: 200 }
-    );
-
+    return NextResponse.json({ success: true, message: "Added to the waitlist" });
   } catch (error) {
-    console.error('Waitlist submission error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error("Waitlist submission error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

@@ -4,176 +4,221 @@
 
 @layer base {
   :root {
-    --background: #000000;
-    --foreground: #ffffff;
+    --background: #0a0a0c;
+    --foreground: #f7f7f8;
+    --border-hairline: rgb(255 255 255 / 0.08);
+    --surface: rgb(255 255 255 / 0.03);
+    --surface-hover: rgb(255 255 255 / 0.06);
   }
 
   * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    @apply bg-black text-white;
-    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    overflow-x: hidden;
-    min-height: 100vh;
+    border-color: var(--border-hairline);
   }
 
   html {
     scroll-behavior: smooth;
+    /* Keep anchored headings clear of the fixed header. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-950 text-ink-50 antialiased;
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+    min-height: 100svh;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-ember-500/30 text-white;
+  }
+
+  /* A single, consistent focus ring everywhere instead of the browser default. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ember-400 ring-offset-2 ring-offset-ink-950 rounded-sm;
+  }
+
+  /* Firefox / Safari form control colours */
+  select option {
+    @apply bg-ink-900 text-ink-50;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  /* Hairline separators that fade at the edges — softer than a full-width border. */
+  .rule-fade {
+    @apply h-px w-full border-0 bg-gradient-to-r from-transparent via-white/12 to-transparent;
+  }
+
+  .card {
+    @apply relative rounded-2xl border border-white/8 bg-white/[0.025] transition-colors duration-300;
+  }
+
+  .card-hover {
+    @apply hover:border-white/15 hover:bg-white/[0.05];
   }
 }
 
 @layer utilities {
-  .animate-marquee {
-    animation: marquee 20s linear infinite;
-  }
-  
-  .animate-fadeIn {
-    animation: fadeIn 0.2s ease-out;
-  }
-  
-  .animate-fadeInUp {
-    animation: fadeInUp 0.8s ease-out forwards;
+  /* Progressive reveal on scroll. Elements start hidden and are un-hidden by
+     the Reveal component; without JS the `no-js` fallback keeps them visible. */
+  .reveal {
     opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
   }
-  
-  .animate-float {
-    animation: float linear infinite;
+
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: none;
   }
-  
-  .animate-blob {
-    animation: blob 7s ease-in-out infinite;
+
+  .text-gradient-ember {
+    @apply bg-gradient-to-br from-ember-100 via-ember-300 to-ember-500 bg-clip-text text-transparent;
   }
-  
-  .animate-spin-slow {
-    animation: spin-slow 30s linear infinite;
+
+  /* Fine engineering grid, masked to fade out toward the edges. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
   }
-  
-  .animate-grid-flow {
-    animation: grid-flow 20s ease-in-out infinite;
+
+  .mask-radial-fade {
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
   }
-  
-  .animate-beam {
-    animation: beam 8s ease-in-out infinite;
+
+  .mask-b-fade {
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
   }
-  
-  .animate-wave {
-    animation: wave 10s ease-in-out infinite;
+
+  /* Very low-cost film grain: one repeating SVG, no extra requests. */
+  .bg-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  
-  .scrollbar-hide {
+
+  .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
-  .scrollbar-hide::-webkit-scrollbar {
+
+  .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
+/* Anyone who has asked their OS to calm things down gets a static page. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  100% {
-    transform: translateX(-50%);
-  }
-}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
+  .reveal {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Syntax highlighting for blog code blocks (rehype-highlight / highlight.js classes). */
+.hljs-comment,
+.hljs-quote {
+  @apply text-ink-400 italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type {
+  @apply text-ember-300;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  @apply text-emerald-300;
+}
+.hljs-number,
+.hljs-symbol,
+.hljs-attribute {
+  @apply text-sky-300;
+}
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  @apply text-violet-300;
+}
+.hljs-built_in,
+.hljs-class .hljs-title {
+  @apply text-rose-300;
+}
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attr {
+  @apply text-ink-200;
+}
+.hljs-deletion {
+  @apply text-red-300;
+}
+.hljs-emphasis {
+  @apply italic;
+}
+.hljs-strong {
+  @apply font-semibold;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100vh) translateX(20px);
-    opacity: 0;
-  }
+/* ---------------------------------------------------------------------------
+   Article body: code styling.
+   Tailwind Typography's `prose-code:*` modifiers also match `pre > code`, which
+   double-decorates every highlighted token, so inline and block code are styled
+   here explicitly instead.
+   --------------------------------------------------------------------------- */
+.prose :not(pre) > code {
+  @apply rounded bg-white/8 px-1.5 py-0.5 font-mono text-[0.85em] font-normal text-ember-200;
 }
 
-@keyframes blob {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(80px, -80px) scale(1.2);
-  }
-  66% {
-    transform: translate(-60px, 60px) scale(0.8);
-  }
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
 }
 
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.prose pre {
+  @apply overflow-x-auto rounded-2xl border border-white/8 bg-ink-900 p-5 text-[0.875em] leading-relaxed;
 }
 
-@keyframes grid-flow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+.prose pre code {
+  @apply bg-transparent p-0 font-mono font-normal text-ink-200;
 }
 
-@keyframes beam {
-  0% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(100vh);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(200vh);
-  }
-}
-
-@keyframes wave {
-  0%, 100% {
-    transform: translateY(0) scaleY(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translateY(-80px) scaleY(1.2);
-    opacity: 0.5;
-  }
+/* Tables can be wider than the column — let them scroll rather than overflow. */
+.prose table {
+  @apply block w-full overflow-x-auto text-sm;
 }

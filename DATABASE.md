@@ -1,143 +1,79 @@
-# Database Schema Documentation
+# Database schema
 
-## Overview
+Forge stores form submissions in Supabase (PostgreSQL). The full DDL is in
+`lib/supabase-schema.sql`; this file is the human-readable reference.
 
-Forge uses Supabase (PostgreSQL) to store all form submissions. This provides a reliable, scalable database with built-in authentication and Row Level Security (RLS).
+All writes go through server-side API routes using the service-role key, so RLS grants `SELECT`
+to authenticated users only and no anonymous `INSERT` policy exists.
 
-## Tables
+## `waitlist`
 
-### `waitlist`
+People who want a desk when one frees up. Written by `POST /api/waitlist` from `/waitlist`.
 
-Stores waitlist signups from `/waitlist` page.
+| Column | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `id` | UUID | auto | Primary key |
+| `full_name` | VARCHAR(255) | yes | |
+| `email` | VARCHAR(255) | yes | Unique — a repeat sign-up returns success, not an error |
+| `phone` | VARCHAR(50) | no | |
+| `interest` | VARCHAR(100) | yes | Hot desk / Private office / Monthly membership / Meeting rooms / Community events only |
+| `referral` | VARCHAR(100) | no | How they heard about us |
+| `message` | TEXT | no | |
+| `created_at` | TIMESTAMPTZ | auto | |
 
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| id | UUID | Auto | Primary key |
-| full_name | VARCHAR(255) | Yes | Full name of applicant |
-| email | VARCHAR(255) | Yes | Email address (unique) |
-| phone | VARCHAR(50) | No | Phone number |
-| interest | VARCHAR(100) | Yes | What they're interested in (hub/academy/courses/all) |
-| referral | VARCHAR(100) | No | How they heard about us |
-| message | TEXT | No | Additional message |
-| created_at | TIMESTAMP | Auto | Signup timestamp |
+Index: `created_at DESC`.
 
-**Indexes:**
-- `email` - For fast lookups and preventing duplicates
-- `created_at DESC` - For sorting by newest first
+## `tour_requests`
 
-### `course_applications`
+Visit bookings. Written by `POST /api/tour` from `/tour`.
 
-Stores course applications from `/apply` page.
+| Column | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `id` | UUID | auto | Primary key |
+| `full_name` | VARCHAR(255) | yes | |
+| `email` | VARCHAR(255) | yes | Not unique — people book more than once |
+| `phone` | VARCHAR(50) | no | |
+| `team_size` | VARCHAR(20) | no | `1`, `2–4`, `5–8`, `9+` |
+| `interest` | VARCHAR(100) | yes | What they came to look at |
+| `preferred_date` | DATE | yes | Rejected server-side if in the past |
+| `preferred_time` | VARCHAR(60) | yes | Morning / Afternoon / Evening slot |
+| `message` | TEXT | no | |
+| `status` | VARCHAR(20) | yes | `new` \| `confirmed` \| `completed` \| `cancelled` |
+| `created_at` | TIMESTAMPTZ | auto | |
 
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| id | UUID | Auto | Primary key |
-| full_name | VARCHAR(255) | Yes | Full name of applicant |
-| location | VARCHAR(255) | Yes | City, State/Country |
-| gender | VARCHAR(50) | Yes | Gender |
-| phone | VARCHAR(50) | Yes | Phone number |
-| email | VARCHAR(255) | Yes | Email address |
-| course_of_interest | VARCHAR(100) | Yes | web-development/mobile-development/backend-development/design |
-| why_interested | TEXT | Yes | Reason for applying |
-| availability | VARCHAR(100) | Yes | weekdays/weekends/evenings/flexible |
-| payment_reference | VARCHAR(255) | Yes | Paystack payment reference |
-| payment_status | VARCHAR(50) | Yes | Payment status (success) |
-| amount_paid | DECIMAL(10,2) | Yes | Amount paid in Naira |
-| created_at | TIMESTAMP | Auto | Application timestamp |
+Indexes: `(preferred_date, status)` for the front-desk view, `created_at DESC` for the log.
 
-**Indexes:**
-- `email` - For fast email lookups
-- `created_at DESC` - For sorting by newest
-- `course_of_interest` - For filtering by course
-- `payment_reference` - For payment verification and lookup
-
-## Security
-
-### Row Level Security (RLS)
-
-Both tables have RLS enabled:
-
-- **Insert**: Anyone can insert (for public forms)
-- **Read**: Only authenticated users (admin dashboard)
-- **Update/Delete**: Not allowed via policies
-
-This means:
-- ✅ Public forms can submit data
-- ✅ Only admins can view submissions
-- ✅ Data cannot be modified/deleted via API
-
-## Analytics Views
-
-### `waitlist_stats`
-
-Groups waitlist signups by interest and date.
+### Front-desk query
 
 ```sql
-SELECT interest, COUNT(*) as count, signup_date
-FROM waitlist
-GROUP BY interest, DATE_TRUNC('day', created_at)
+select full_name, email, phone, team_size, interest, preferred_time, message
+from tour_requests
+where status = 'new' and preferred_date >= current_date
+order by preferred_date, created_at;
 ```
 
-### `application_stats`
+## `newsletter_subscribers`
 
-Groups applications by course and date.
+Blog and footer sign-ups. Written by `POST /api/subscribe`.
+
+| Column | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `id` | UUID | auto | Primary key |
+| `email` | VARCHAR(255) | yes | Unique — re-subscribing is a no-op that returns success |
+| `source` | VARCHAR(40) | yes | `footer`, `blog`, … — which form they used |
+| `created_at` | TIMESTAMPTZ | auto | |
+
+## Retired tables
+
+`course_applications` backed the Academy/Courses application flow, which no longer exists. The
+migration leaves the table alone because it still contains real applications and payment
+references. Export it, then drop it by hand:
 
 ```sql
-SELECT course_of_interest, COUNT(*) as count, application_date
-FROM course_applications
-GROUP BY course_of_interest, DATE_TRUNC('day', created_at)
+drop table course_applications;
 ```
 
-## Querying Data
+## Migrations
 
-### Using Supabase Dashboard
-
-1. Go to **Table Editor** to view data
-2. Use **SQL Editor** for custom queries
-3. Export data as CSV from Table Editor
-
-### Example Queries
-
-**Get all waitlist signups from last 7 days:**
-```sql
-SELECT * FROM waitlist
-WHERE created_at >= NOW() - INTERVAL '7 days'
-ORDER BY created_at DESC;
-```
-
-**Count applications by course:**
-```sql
-SELECT course_of_interest, COUNT(*) as total
-FROM course_applications
-GROUP BY course_of_interest
-ORDER BY total DESC;
-```
-
-**Get recent applications:**
-```sql
-SELECT full_name, email, course_of_interest, created_at
-FROM course_applications
-ORDER BY created_at DESC
-LIMIT 50;
-```
-
-## Backup & Export
-
-### Manual Export
-1. Go to Table Editor in Supabase
-2. Select table
-3. Click "Export" → "CSV"
-
-### Automated Backups
-Supabase provides automated daily backups on paid plans.
-
-## Future Enhancements
-
-Consider adding:
-- [ ] Status tracking (pending/approved/rejected)
-- [ ] Admin notes field
-- [ ] Email verification status
-- [ ] Last contact date
-- [ ] Payment status (for courses)
-- [ ] Student dashboard integration
-
+`lib/migrations/` holds dated, additive SQL. Run them in filename order against an existing
+database; `lib/supabase-schema.sql` is the current state for a fresh one.
