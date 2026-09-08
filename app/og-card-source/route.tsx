@@ -3,13 +3,19 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import { site } from "@/lib/site";
 
-export const alt = `${site.name} — ${site.tagline}`;
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+const size = { width: 1200, height: 630 };
 
 /**
- * Default social card for every page that doesn't define its own — blog posts
- * override it with app/blog/[slug]/opengraph-image.tsx.
+ * Source of truth for the site social card.
+ *
+ * The metadata in app/layout.tsx points crawlers at the exported
+ * public/og/card.jpg rather than this route: ImageResponse only emits PNG, and
+ * a 630KB PNG of a photograph is above the size WhatsApp reliably fetches,
+ * where the same card as JPEG is about 126KB. Regenerate after editing:
+ *
+ *   yarn build && yarn start &
+ *   curl -s localhost:3000/opengraph-image \
+ *     | sips -s format jpeg -s formatOptions 92 --out public/og/card.jpg
  *
  * The photo is a portrait shot, so it takes a full-height panel on the right
  * rather than being cropped into a letterbox band, which would throw away most
@@ -20,7 +26,12 @@ function photoDataUri() {
   return `data:image/jpeg;base64,${fs.readFileSync(file).toString("base64")}`;
 }
 
-export default function OpengraphImage() {
+export function GET() {
+  // Local tooling only — nothing should link to this in production.
+  if (process.env.NODE_ENV === "production") {
+    return new Response("Not found", { status: 404 });
+  }
+
   return new ImageResponse(
     (
       <div
@@ -106,14 +117,18 @@ export default function OpengraphImage() {
             <div style={{ display: "flex", color: "#85858f", fontSize: "24px" }}>
               Private offices · Hot desks · Lagos
             </div>
+            {/* No domain text: this card is exported to a static JPEG, and a
+                frozen hostname would outlive any future domain change. */}
             <div style={{ display: "flex", color: "#facc15", fontSize: "24px" }}>
-              {site.url.replace(/^https?:\/\//, "")}
+              Book a tour
             </div>
           </div>
         </div>
 
         {/* Photo panel */}
         <div style={{ display: "flex", position: "relative", width: "500px", height: "630px" }}>
+          {/* satori renders plain <img>; next/image does not exist in this context. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={photoDataUri()}
             alt=""
