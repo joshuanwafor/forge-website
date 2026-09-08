@@ -22,11 +22,16 @@ function resolveSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL;
   if (explicit) return explicit.replace(/\/+$/, "");
 
-  // Vercel system variables: the stable production domain, then the
-  // per-deployment URL so preview builds resolve to themselves.
-  const vercel =
-    process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
-  if (vercel) return `https://${vercel.replace(/\/+$/, "")}`;
+  // A production build is always the canonical host. Vercel's
+  // VERCEL_PROJECT_PRODUCTION_URL is whatever domain is marked primary in the
+  // dashboard — currently www — so consulting it first silently overrode the
+  // apex and published www canonicals.
+  if (process.env.VERCEL_ENV === "production") return PRODUCTION_ORIGIN;
+
+  // Preview deployments have no fixed domain; let them resolve to themselves.
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL.replace(/\/+$/, "")}`;
+  }
 
   return process.env.NODE_ENV === "production"
     ? PRODUCTION_ORIGIN
