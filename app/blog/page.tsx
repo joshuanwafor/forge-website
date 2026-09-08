@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     // Declaring `openGraph` replaces the root metadata's wholesale, so the
     // inherited card has to be named again or the page ships with no image.
-    images: ["/opengraph-image"],
+    images: ["/og/card.jpg"],
   },
 };
 

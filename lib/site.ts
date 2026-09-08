@@ -3,12 +3,31 @@
  * Edit here rather than hunting through page components.
  */
 
+/**
+ * Canonical origin, used for canonical tags, the sitemap, RSS, JSON-LD and the
+ * absolute og:image URL. Getting it wrong points every share and every crawler
+ * at somebody else's site, so there is deliberately no hardcoded domain here:
+ * set NEXT_PUBLIC_SITE_URL, or let Vercel supply its own domain at build time.
+ */
+function resolveSiteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.replace(/\/+$/, "");
+
+  // Vercel system variables: the stable production domain, then the
+  // per-deployment URL so preview builds still resolve to themselves.
+  const vercel =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  if (vercel) return `https://${vercel.replace(/\/+$/, "")}`;
+
+  return "http://localhost:3000";
+}
+
 export const site = {
   name: "Forge",
   tagline: "A workspace for people who build",
   description:
     "Forge is a workspace for developers, designers and founders in Nigeria. Private offices, hot desks, meeting rooms, gigabit fibre and a community that ships.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://forgehub.in",
+  url: resolveSiteUrl(),
   email: "hello@forgehub.in",
   phone: "+234 800 000 0000",
   address: {

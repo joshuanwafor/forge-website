@@ -124,8 +124,34 @@ lib/
 ## Environment variables
 
 See `.env.example`. Supabase is required for the forms; Zoho is optional and silently skipped
-when unset. `NEXT_PUBLIC_SITE_URL` should be the canonical origin — it feeds canonical URLs,
-the sitemap, RSS and social cards.
+when unset.
+
+`NEXT_PUBLIC_SITE_URL` is the canonical origin and feeds canonical tags, the sitemap, RSS and
+the absolute `og:image` URL. It must be set **at build time** — `NEXT_PUBLIC_*` values are
+inlined by `next build`, so setting it only on the running server has no effect. Unset, it
+falls back to Vercel's own deployment domain and then to `http://localhost:3000`; there is no
+hardcoded domain, deliberately, because a stale one silently points every share at a site you
+do not own.
+
+## Social cards
+
+- **Every page except blog posts** uses `public/og/card.jpg`, a static 1200x630 JPEG wired up
+  in `app/layout.tsx`. It is a static file rather than a generated route because
+  `ImageResponse` only emits PNG, and a 630KB PNG of a photograph is above the size WhatsApp
+  reliably fetches — the same card as JPEG is about 126KB.
+- **Blog posts** get a generated card per post from `app/blog/[slug]/opengraph-image.tsx`.
+  Those are text-only and small enough to serve as PNG.
+
+To change the site card, edit `app/og-card-source/route.tsx` (the layout is React, rendered by
+satori) and re-export it:
+
+```bash
+yarn dev
+curl -s localhost:3000/og-card-source | sips -s format jpeg -s formatOptions 92 --out public/og/card.jpg
+```
+
+That route 404s in production; it exists only as the regeneration source. The photograph it
+composites is `public/og/hub.jpg` — swap that file to change the picture.
 
 ## Scripts
 
