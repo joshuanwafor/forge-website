@@ -129,9 +129,11 @@ when unset.
 `NEXT_PUBLIC_SITE_URL` is the canonical origin and feeds canonical tags, the sitemap, RSS and
 the absolute `og:image` URL. It must be set **at build time** — `NEXT_PUBLIC_*` values are
 inlined by `next build`, so setting it only on the running server has no effect. Unset, it
-falls back to Vercel's own deployment domain and then to `http://localhost:3000`; there is no
-hardcoded domain, deliberately, because a stale one silently points every share at a site you
-do not own.
+falls back to Vercel's own deployment domain, then to `https://www.gotoforge.ng` in production
+builds and `http://localhost:3000` in development.
+
+Use the `www` host: the apex `gotoforge.ng` 307-redirects to it, so an apex canonical would put
+a redirect in front of every crawled URL and every social card fetch.
 
 ## Social cards
 

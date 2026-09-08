@@ -9,17 +9,22 @@
  * at somebody else's site, so there is deliberately no hardcoded domain here:
  * set NEXT_PUBLIC_SITE_URL, or let Vercel supply its own domain at build time.
  */
+/** The apex 307-redirects here, so `www` is the host that actually serves. */
+const PRODUCTION_ORIGIN = "https://www.gotoforge.ng";
+
 function resolveSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL;
   if (explicit) return explicit.replace(/\/+$/, "");
 
   // Vercel system variables: the stable production domain, then the
-  // per-deployment URL so preview builds still resolve to themselves.
+  // per-deployment URL so preview builds resolve to themselves.
   const vercel =
     process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
   if (vercel) return `https://${vercel.replace(/\/+$/, "")}`;
 
-  return "http://localhost:3000";
+  return process.env.NODE_ENV === "production"
+    ? PRODUCTION_ORIGIN
+    : "http://localhost:3000";
 }
 
 export const site = {
@@ -28,7 +33,7 @@ export const site = {
   description:
     "Forge is a workspace for developers, designers and founders in Nigeria. Private offices, hot desks, meeting rooms, gigabit fibre and a community that ships.",
   url: resolveSiteUrl(),
-  email: "hello@forgehub.in",
+  email: "hello@gotoforge.ng",
   phone: "+234 800 000 0000",
   address: {
     line1: "Forge Hub",
