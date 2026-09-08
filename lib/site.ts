@@ -9,8 +9,14 @@
  * at somebody else's site, so there is deliberately no hardcoded domain here:
  * set NEXT_PUBLIC_SITE_URL, or let Vercel supply its own domain at build time.
  */
-/** The apex 307-redirects here, so `www` is the host that actually serves. */
-const PRODUCTION_ORIGIN = "https://www.gotoforge.ng";
+/**
+ * The apex is the canonical host.
+ *
+ * Note it currently 307-redirects to www, which means canonical tags and the
+ * og:image point one hop away from the host actually serving. Flip the redirect
+ * in the Vercel domain settings so www redirects to the apex, and the two agree.
+ */
+const PRODUCTION_ORIGIN = "https://gotoforge.ng";
 
 function resolveSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL;
