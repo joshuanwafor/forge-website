@@ -24,6 +24,9 @@ export const metadata: Metadata = {
       "Notes on building, working and shipping from Lagos — infrastructure, community and the practical side of running a workspace.",
     url: `${site.url}/blog`,
     type: "website",
+    // Declaring `openGraph` replaces the root metadata's wholesale, so the
+    // inherited card has to be named again or the page ships with no image.
+    images: ["/opengraph-image"],
   },
 };
 
