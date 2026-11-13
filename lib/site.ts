@@ -72,7 +72,7 @@ export const footerNav = [
       { name: "Spaces", href: "/#spaces" },
       { name: "Pricing", href: "/#pricing" },
       { name: "Book a tour", href: "/tour" },
-      { name: "Community", href: "/#community" },
+      { name: "Book a desk", href: "/#book" },
     ],
   },
   {

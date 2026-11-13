@@ -1,15 +1,12 @@
-import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Pricing from "@/components/home/Pricing";
 import Faq from "@/components/home/Faq";
+import SeatBooking from "@/components/booking/SeatBooking";
 import { Backdrop } from "@/components/ui/Backdrop";
 import { Button, ArrowIcon } from "@/components/ui/Button";
-import { Container, Eyebrow, Section, SectionHeading } from "@/components/ui/Section";
+import { Container, Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
-import { PostCard } from "@/components/blog/PostCard";
-import { getAllPosts } from "@/lib/blog";
-import { site } from "@/lib/site";
 
 const stats = [
   { value: "99.4%", label: "Power uptime, last 90 days" },
@@ -30,7 +27,7 @@ const spaces = [
   {
     name: "Hot desks",
     description: "Any open seat on the shared floor. Turn up, plug in, get on with it.",
-    detail: "From ₦2,000 / day",
+    detail: "From ₦3,000 / day",
   },
   {
     name: "Quiet zone",
@@ -86,8 +83,6 @@ const audiences = [
 ];
 
 export default function Home() {
-  const posts = getAllPosts().slice(0, 3);
-
   return (
     <>
       <Header />
@@ -127,12 +122,12 @@ export default function Home() {
                 className="mt-10 flex flex-col gap-3 animate-fade-up sm:flex-row sm:items-center"
                 style={{ animationDelay: "240ms" }}
               >
-                <Button href="/tour" size="lg">
-                  Book a tour
+                <Button href="#book" size="lg">
+                  Book a desk
                   <ArrowIcon />
                 </Button>
-                <Button href="#pricing" variant="secondary" size="lg">
-                  See pricing
+                <Button href="/tour" variant="secondary" size="lg">
+                  Book a tour
                 </Button>
               </div>
 
@@ -140,7 +135,7 @@ export default function Home() {
                 className="mt-6 font-mono text-xs text-ink-400 animate-fade-up"
                 style={{ animationDelay: "300ms" }}
               >
-                Day passes from ₦2,000 · No membership required
+                Day passes from ₦3,000 · No membership required
               </p>
             </div>
           </Container>
@@ -219,6 +214,9 @@ export default function Home() {
             </div>
           </Container>
         </Section>
+
+        {/* Desk booking */}
+        <SeatBooking />
 
         {/* Amenities marquee */}
         <div className="relative overflow-hidden border-y border-white/8 py-5">
@@ -300,82 +298,12 @@ export default function Home() {
           </Container>
         </Section>
 
-        {/* Community + latest writing */}
-        <Section id="community">
-          <Container>
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <SectionHeading
-                eyebrow="Community"
-                title="Demo night, third Thursday"
-                description="Five minutes, software that actually runs, broken builds welcome. Open to anyone, whether or not you work here."
-              />
-              <Link
-                href="/blog"
-                className="group inline-flex items-center gap-2 text-sm font-semibold text-ember-400 hover:text-ember-300"
-              >
-                Read the blog
-                <ArrowIcon />
-              </Link>
-            </div>
-
-            {posts.length > 0 ? (
-              <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map((post, i) => (
-                  <Reveal as="li" key={post.slug} delay={i * 70} className="h-full">
-                    <PostCard post={post} />
-                  </Reveal>
-                ))}
-              </ul>
-            ) : null}
-          </Container>
-        </Section>
-
         {/* FAQ */}
         <Section>
           <Container>
             <SectionHeading align="center" eyebrow="Questions" title="Before you visit" />
             <div className="mt-12">
               <Faq />
-            </div>
-          </Container>
-        </Section>
-
-        {/* Final CTA */}
-        <Section>
-          <Container>
-            <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.07] to-transparent px-6 py-16 text-center sm:px-12 sm:py-20">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-0 h-64 w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-500/18 blur-[110px]"
-              />
-
-              <div className="relative">
-                <Eyebrow className="mb-5">Come and see it</Eyebrow>
-                <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight text-white sm:text-5xl sm:leading-[1.08]">
-                  Bring the work you&apos;ve been putting off
-                </h2>
-                <p className="mx-auto mt-6 max-w-xl text-lg text-ink-300">
-                  Tours take fifteen minutes. Or skip the tour, buy a day pass and judge the
-                  room from a chair.
-                </p>
-
-                <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-                  <Button href="/tour" size="lg">
-                    Book a tour
-                    <ArrowIcon />
-                  </Button>
-                  <Button href={`mailto:${site.email}`} variant="secondary" size="lg">
-                    Email us
-                  </Button>
-                </div>
-
-                <p className="mt-10 font-mono text-xs uppercase tracking-[0.14em] text-ink-400">
-                  {site.address.line1} · {site.address.line2} ·{" "}
-                  <a href={`mailto:${site.email}`} className="text-ink-300 hover:text-white">
-                    {site.email}
-                  </a>
-                </p>
-              </div>
             </div>
           </Container>
         </Section>
