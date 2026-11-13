@@ -57,8 +57,20 @@ export default function FloorPlan(props: FloorPlanProps) {
   return (
     <div className="grid gap-[2px] bg-white/25 p-[2px] sm:grid-cols-2 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)_minmax(0,1fr)]">
       {main ? <MainFloor zone={main} {...props} className="sm:col-span-2 lg:col-span-1 lg:row-span-3" /> : null}
-      {office1 ? <Room zone={office1} {...props} door={{ side: "bottom", at: "44%" }} /> : null}
-      {office2 ? <Room zone={office2} {...props} door={{ side: "bottom", at: "40%" }} /> : null}
+      {office1 ? (
+        <Room zone={office1} {...props} door={{ side: "bottom", at: "44%" }} windows={[{ side: "top", at: "12%", size: "76%" }]} />
+      ) : null}
+      {office2 ? (
+        <Room
+          zone={office2}
+          {...props}
+          door={{ side: "bottom", at: "40%" }}
+          windows={[
+            { side: "top", at: "12%", size: "76%" },
+            { side: "right", at: "22%", size: "55%" },
+          ]}
+        />
+      ) : null}
 
       <Utility label="Corridor" className="hidden min-h-14 lg:col-span-2 lg:grid">
         {/* the door from the main floor */}
@@ -104,6 +116,27 @@ function Door({ side, at, center, className }: { side: Side; at: string; center?
         className
       )}
       style={across ? { left: at } : { top: at }}
+    />
+  );
+}
+
+/** A window in an outside wall, drawn the way plans do: a pale strip in the wall line. */
+function WindowMark({ side, at, size, always }: { side: Side; at: string; size: string; always?: boolean }) {
+  const across = side === "top" || side === "bottom";
+  return (
+    <span
+      aria-hidden="true"
+      title="Window with blackout blind"
+      className={cn(
+        "pointer-events-none absolute z-10 bg-sky-200/80",
+        always ? "block" : "hidden lg:block",
+        across ? "h-[2px]" : "w-[2px]",
+        side === "top" && "-top-[2px]",
+        side === "bottom" && "-bottom-[2px]",
+        side === "left" && "-left-[2px]",
+        side === "right" && "-right-[2px]"
+      )}
+      style={across ? { left: at, width: size } : { top: at, height: size }}
     />
   );
 }
@@ -331,6 +364,11 @@ function MainFloor({ className, ...props }: RoomProps & { className?: string }) 
     <section aria-label={zone.name} className={cn("relative flex flex-col bg-ink-950", className, !state.sold && "opacity-60")}>
       {/* Doors in the outer wall: one at the top between the tables, the entrance into reception */}
       <Door side="top" at="54%" />
+      {/* A window in each corner; the bottom-left one is reception's */}
+      <WindowMark side="left" at="3%" size="12%" always />
+      <WindowMark side="top" at="84%" size="13%" always />
+      <WindowMark side="left" at="85%" size="12%" always />
+      <WindowMark side="bottom" at="84%" size="13%" />
       <Door side="bottom" at="12%" className="hidden w-14 lg:block" />
 
       <div className="p-4 pb-0 sm:p-5 sm:pb-0">
@@ -371,8 +409,13 @@ function MainFloor({ className, ...props }: RoomProps & { className?: string }) 
 function Room({
   className,
   door,
+  windows = [],
   ...props
-}: RoomProps & { className?: string; door: { side: Side; at: string } }) {
+}: RoomProps & {
+  className?: string;
+  door: { side: Side; at: string };
+  windows?: Array<{ side: Side; at: string; size: string }>;
+}) {
   const { zone } = props;
   const state = roomState(props.zone, props.plan, props.booked, props.selected, props.loading);
   // The closed workspace is laid out top to bottom; the rest sit in a row.
@@ -383,6 +426,9 @@ function Room({
       {state.roomSelected ? <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-ember-500/[0.07]" /> : null}
       {/* Doors open onto the corridor, which is only drawn from lg up */}
       <Door side={door.side} at={door.at} className="hidden lg:block" />
+      {windows.map((w, i) => (
+        <WindowMark key={i} {...w} />
+      ))}
 
       <RoomHeader zone={zone} price={state.price} status={state.status} warn={state.warn} />
 

@@ -6,6 +6,7 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { CameraControls, CameraControlsImpl, RoundedBox, useCursor } from "@react-three/drei";
 import { cn } from "@/lib/cn";
 import { roomState } from "./rooms";
+import { drawSign, paintArt, type ArtKind } from "./artwork";
 import {
   PLANS,
   SEATS,
@@ -46,6 +47,8 @@ type Props = {
 const W = 16;
 const D = 10.5;
 const WALL_H = 1.1;
+/** Outside walls away from the camera stand full height, so art can hang on them. */
+const WALL_TALL = 2.7;
 
 type Rect = [x0: number, z0: number, x1: number, z1: number];
 type FloorKind = "oak" | "stone" | "carpet" | "carpetDark" | "concrete" | "tile";
@@ -106,12 +109,16 @@ const PLACE: Record<string, { x: number; z: number }> = {
 };
 
 /** Rooms the camera can fly to. */
-const FOCUS: Record<string, { label: string; rect: Rect }> = {
-  all: { label: "Whole floor", rect: [-0.3, -0.3, W + 0.3, D + 0.3] },
-  main: { label: "Main", rect: [0, 0, 8.4, D] },
-  office1: { label: "Office 1", rect: [8.4, 0, 12.2, 4] },
-  office2: { label: "Office 2", rect: [12.2, 0, 16, 4] },
-  quiet: { label: "Closed", rect: [12.2, 5.5, 16, D] },
+/**
+ * Rooms the camera can fly to, each from the angle that shows it best
+ * (azimuth in radians; 0 looks in from the entrance side, + swings east).
+ */
+const FOCUS: Record<string, { label: string; rect: Rect; azimuth: number }> = {
+  all: { label: "Whole floor", rect: [-0.3, -0.3, W + 0.3, D + 0.3], azimuth: 0 },
+  main: { label: "Main", rect: [0, 0, 8.4, D], azimuth: 0.6 }, // windows on the west wall and the art on the back wall
+  office1: { label: "Office 1", rect: [8.4, 0, 12.2, 4], azimuth: 0 },
+  office2: { label: "Office 2", rect: [12.2, 0, 16, 4], azimuth: -0.45 }, // takes in the corner window
+  quiet: { label: "Closed", rect: [12.2, 5.5, 16, D], azimuth: -0.4 }, // faces the painting
 };
 type FocusId = keyof typeof FOCUS;
 
@@ -122,6 +129,39 @@ const TAGS: Record<string, [number, number]> = {
   office2: [14.1, -0.35],
   quiet: [13.4, 4.75],
 };
+
+/**
+ * Artwork, hung where people will actually see it: over the big tables, by the
+ * doors, above the office desks, and the Forge sign behind reception.
+ * `wall` is the index in WALLS; `at` is the position along it; y is the centre height.
+ */
+const ART: Array<{ wall: number; at: number; y: number; w: number; h: number; kind: ArtKind; frame?: "black" | "oak" }> = [
+  { wall: 0, at: 2.0, y: 1.65, w: 1.7, h: 1.05, kind: "sunrise", frame: "black" }, // over Table 1
+  { wall: 4, at: 2.85, y: 1.6, w: 0.6, h: 0.8, kind: "arc", frame: "oak" }, // pair on the side wall by Table 1
+  { wall: 4, at: 3.75, y: 1.6, w: 0.6, h: 0.8, kind: "dots", frame: "oak" },
+  { wall: 3, at: 6.2, y: 1.6, w: 0.85, h: 1.25, kind: "bauhaus", frame: "oak" }, // main floor, front wall (seen when turned)
+  { wall: 4, at: 7.45, y: 1.8, w: 2.0, h: 0.62, kind: "sign" }, // reception: the brand wall
+  { wall: 5, at: 8.0, y: 1.6, w: 1.0, h: 1.3, kind: "calm", frame: "oak" }, // closed workspace
+  { wall: 5, at: 4.75, y: 1.6, w: 0.55, h: 0.75, kind: "ring", frame: "black" }, // end of the corridor
+];
+
+/**
+ * Windows, each with a blackout roller blind: one in each corner of the main
+ * space (reception has the south-west one), and the private offices'.
+ * `drop` is how far the blind starts pulled down (0 open, 1 fully closed).
+ */
+const WINDOWS: Array<{ wall: number; at: number; w: number; drop: number; panes: number }> = [
+  // One in each corner of the main space; the south-west corner is reception
+  { wall: 4, at: 0.9, w: 1.3, drop: 0.1, panes: 2 }, // north-west, beside Table 1
+  { wall: 1, at: 7.7, w: 1.2, drop: 0.15, panes: 2 }, // north-east, behind Table 2
+  { wall: 3, at: 7.7, w: 1.2, drop: 0.1, panes: 2 }, // south-east, by the wall desk
+  { wall: 4, at: 9.55, w: 1.3, drop: 0.2, panes: 2 }, // south-west: reception
+  { wall: 1, at: 10.3, w: 3.0, drop: 0.35, panes: 3 }, // Private Office 1, above the desks
+  { wall: 1, at: 14.1, w: 3.0, drop: 0.55, panes: 3 }, // Private Office 2, above the desks
+  { wall: 5, at: 2.0, w: 2.2, drop: 0.2, panes: 2 }, // Private Office 2, corner window
+];
+const WINDOW_H = 1.3;
+const WINDOW_Y = 1.7; // centre height; the sill sits just above desk monitors
 
 // ---------------------------------------------------------------------------
 // Turning a seat group into furniture
@@ -344,36 +384,49 @@ const OUTWARD: Array<[number, number]> = [
 ];
 
 /**
- * Dollhouse cutaway. Outside walls on the camera's side drop to a curb, and
- * inside walls running across the line of sight drop to half height, so no
- * chair is ever hidden behind a wall — whichever way the model is turned.
+ * Dollhouse cutaway. Outside walls on the camera's side drop to a curb and the
+ * far ones stand full height; inside walls running across the line of sight
+ * drop to half height. No chair is ever hidden behind a wall, whichever way the
+ * model is turned, and art only shows on a wall that is standing.
  */
 function Walls() {
   const meshes = useRef<Array<THREE.Mesh | null>>([]);
+  const art = useRef<Array<THREE.Group | null>>([]);
+  const windows = useRef<Array<THREE.Group | null>>([]);
   const cam = useMemo(() => new THREE.Vector3(), []);
+  const offset = useMemo(() => new THREE.Vector3(W / 2, 0, D / 2), []);
+  const look = useMemo(() => new THREE.Vector3(), []);
 
   useFrame(({ camera }) => {
     // Camera in building coordinates, and the horizontal direction it looks in
-    cam.copy(camera.position).add(new THREE.Vector3(W / 2, 0, D / 2));
-    const look = new THREE.Vector3();
+    cam.copy(camera.position).add(offset);
     camera.getWorldDirection(look);
-    const lx = look.x / (Math.hypot(look.x, look.z) || 1);
-    const lz = look.z / (Math.hypot(look.x, look.z) || 1);
+    const flat = Math.hypot(look.x, look.z) || 1;
+    const lx = look.x / flat;
+    const lz = look.z / flat;
 
-    WALLS.forEach(([x0, z0, x1, z1], i) => {
-      const mesh = meshes.current[i];
-      if (!mesh) return;
-      const across = z0 === z1;
-      let height = WALL_H;
+    const heights = WALLS.map(([x0, z0, x1, z1], i) => {
       if (i < OUTWARD.length) {
         const [nx, nz] = OUTWARD[i];
         const outside = (cam.x - (x0 + x1) / 2) * nx + (cam.z - (z0 + z1) / 2) * nz > 0;
-        if (outside) height = 0.18;
-      } else if (Math.abs(across ? lz : lx) > 0.6) {
-        height = 0.55;
+        return outside ? 0.18 : WALL_TALL;
       }
+      return Math.abs(z0 === z1 ? lz : lx) > 0.6 ? 0.55 : WALL_H;
+    });
+
+    heights.forEach((height, i) => {
+      const mesh = meshes.current[i];
+      if (!mesh) return;
       mesh.scale.y = height / WALL_H;
       mesh.position.y = height / 2;
+    });
+    ART.forEach((piece, i) => {
+      const group = art.current[i];
+      if (group) group.visible = heights[piece.wall] >= WALL_TALL;
+    });
+    WINDOWS.forEach((win, i) => {
+      const group = windows.current[i];
+      if (group) group.visible = heights[win.wall] >= WALL_TALL;
     });
   });
 
@@ -397,6 +450,184 @@ function Walls() {
           </mesh>
         );
       })}
+      {WINDOWS.map((win, i) => (
+        <group
+          key={`window-${i}`}
+          ref={(g) => {
+            windows.current[i] = g;
+          }}
+        >
+          <Window {...win} />
+        </group>
+      ))}
+      {ART.map((piece, i) => (
+        <group
+          key={i}
+          ref={(g) => {
+            art.current[i] = g;
+          }}
+        >
+          <Artwork {...piece} />
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/** Position and turn for something hung on the inside face of an outside wall. */
+function onWall(wall: number, at: number, y: number, out = 0.02) {
+  const [x0, z0, , , t] = WALLS[wall];
+  const [nx, nz] = OUTWARD[wall];
+  const inset = t / 2 + out;
+  const position: [number, number, number] = nz !== 0 ? [at, y, z0 - nz * inset] : [x0 - nx * inset, y, at];
+  const rotationY = nz === -1 ? 0 : nz === 1 ? Math.PI : nx === -1 ? Math.PI / 2 : -Math.PI / 2;
+  return { position, rotationY };
+}
+
+const frameMetal = new THREE.MeshStandardMaterial({ color: "#2a2b30", roughness: 0.35, metalness: 0.7 });
+const sillStone = new THREE.MeshStandardMaterial({ color: "#e4e0d8", roughness: 0.5 });
+const blindFabric = new THREE.MeshStandardMaterial({ color: "#1f2126", roughness: 0.95 });
+
+/**
+ * A window with a blackout roller blind. Click it to pull the blind all the
+ * way down, click again to raise it back.
+ */
+function Window({ wall, at, w, drop, panes }: { wall: number; at: number; w: number; drop: number; panes: number }) {
+  const invalidate = useThree((s) => s.invalidate);
+  const glass = useMemo(() => paintArt("daylight", w / WINDOW_H), [w]);
+  const [closed, setClosed] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  useCursor(hovered);
+
+  const fabric = useRef<THREE.Mesh>(null);
+  const rail = useRef<THREE.Mesh>(null);
+  const current = useRef(drop);
+  const target = closed ? 0.96 : drop;
+
+  const h = WINDOW_H;
+  const inner = w - 0.08;
+  useFrame((_, delta) => {
+    const diff = target - current.current;
+    if (Math.abs(diff) > 0.001) {
+      current.current += diff * Math.min(1, delta * 6);
+      invalidate();
+    } else {
+      current.current = target;
+    }
+    const d = Math.max(0.02, current.current);
+    if (fabric.current) {
+      fabric.current.scale.y = d;
+      fabric.current.position.y = h / 2 - (h * d) / 2;
+    }
+    if (rail.current) rail.current.position.y = h / 2 - h * d;
+  });
+
+  const { position, rotationY } = onWall(wall, at, WINDOW_Y, 0);
+  const bar = 0.05;
+
+  return (
+    <group
+      position={position}
+      rotation={[0, rotationY, 0]}
+      onClick={(e: ThreeEvent<MouseEvent>) => {
+        e.stopPropagation();
+        if (e.delta >= DRAG_PX) return;
+        setClosed((c) => !c);
+        invalidate();
+      }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerOut={() => setHovered(false)}
+    >
+      {/* Daylight glass, set slightly back into the wall */}
+      <mesh position={[0, 0, 0.005]}>
+        <planeGeometry args={[inner, h - 0.08]} />
+        <meshStandardMaterial map={glass} emissiveMap={glass} emissive="#ffffff" emissiveIntensity={0.85} roughness={0.15} metalness={0.1} />
+      </mesh>
+      {/* Frame and mullions */}
+      <mesh position={[0, h / 2 - bar / 2, 0.03]} material={frameMetal} castShadow>
+        <boxGeometry args={[w, bar, 0.06]} />
+      </mesh>
+      <mesh position={[0, -h / 2 + bar / 2, 0.03]} material={frameMetal}>
+        <boxGeometry args={[w, bar, 0.06]} />
+      </mesh>
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[(side * (w - bar)) / 2, 0, 0.03]} material={frameMetal}>
+          <boxGeometry args={[bar, h, 0.06]} />
+        </mesh>
+      ))}
+      {Array.from({ length: panes - 1 }, (_, i) => (
+        <mesh key={i} position={[-w / 2 + ((i + 1) * w) / panes, 0, 0.03]} material={frameMetal}>
+          <boxGeometry args={[0.035, h, 0.05]} />
+        </mesh>
+      ))}
+      {/* Sill */}
+      <mesh position={[0, -h / 2 - 0.02, 0.07]} material={sillStone} castShadow receiveShadow>
+        <boxGeometry args={[w + 0.12, 0.04, 0.16]} />
+      </mesh>
+      {/* Blackout roller blind: cassette, fabric and bottom rail */}
+      <mesh position={[0, h / 2 + 0.05, 0.07]} material={frameMetal} castShadow>
+        <boxGeometry args={[w + 0.04, 0.1, 0.1]} />
+      </mesh>
+      <mesh ref={fabric} position={[0, h / 2 - (h * drop) / 2, 0.075]} scale={[1, drop, 1]} material={blindFabric} castShadow>
+        <boxGeometry args={[w - 0.02, h, 0.008]} />
+      </mesh>
+      <mesh ref={rail} position={[0, h / 2 - h * drop, 0.08]} material={frameMetal}>
+        <boxGeometry args={[w - 0.01, 0.025, 0.025]} />
+      </mesh>
+    </group>
+  );
+}
+
+/** One framed piece, hung flat on the inside face of its wall. */
+function Artwork({
+  wall,
+  at,
+  y,
+  w,
+  h,
+  kind,
+  frame,
+}: {
+  wall: number;
+  at: number;
+  y: number;
+  w: number;
+  h: number;
+  kind: ArtKind;
+  frame?: "black" | "oak";
+}) {
+  const invalidate = useThree((s) => s.invalidate);
+  const map = useMemo(() => paintArt(kind, w / h), [kind, w, h]);
+
+  useEffect(() => {
+    if (kind === "sign") void drawSign(map).then(() => invalidate(), () => {});
+  }, [kind, map, invalidate]);
+
+  const { position, rotationY } = onWall(wall, at, y);
+  const sign = kind === "sign";
+
+  return (
+    <group position={position} rotation={[0, rotationY, 0]}>
+      <mesh castShadow>
+        <boxGeometry args={[w, h, sign ? 0.05 : 0.035]} />
+        <meshStandardMaterial
+          color={sign ? "#17171b" : frame === "oak" ? "#b88a5a" : "#1a1a1f"}
+          roughness={frame === "oak" ? 0.6 : 0.4}
+          metalness={frame === "black" ? 0.3 : 0}
+        />
+      </mesh>
+      <mesh position={[0, 0, sign ? 0.026 : 0.019]}>
+        <planeGeometry args={sign ? [w, h] : [w - 0.06, h - 0.06]} />
+        {sign ? (
+          // Backlit lettering: the bright parts of the sign glow
+          <meshStandardMaterial map={map} emissiveMap={map} emissive="#ffffff" emissiveIntensity={0.9} roughness={0.4} />
+        ) : (
+          <meshStandardMaterial map={map} roughness={0.85} />
+        )}
+      </mesh>
     </group>
   );
 }
@@ -404,6 +635,9 @@ function Walls() {
 // ---------------------------------------------------------------------------
 // Furniture
 // ---------------------------------------------------------------------------
+
+/** Pointer travel (px) beyond which a press is a drag, not a click. */
+const DRAG_PX = 8;
 
 const metal = new THREE.MeshStandardMaterial({ color: "#1d1d22", roughness: 0.4, metalness: 0.6 });
 const EMBER = "#facc15";
@@ -435,7 +669,7 @@ function Table({
         receiveShadow
         onClick={(e: ThreeEvent<MouseEvent>) => {
           e.stopPropagation();
-          if (interactive) onClick();
+          if (interactive && e.delta < DRAG_PX) onClick();
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
@@ -522,7 +756,7 @@ function Chair({
       rotation={[0, TURN[spot.facing], 0]}
       onClick={(e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
-        if (interactive) onClick();
+        if (interactive && e.delta < DRAG_PX) onClick();
       }}
       onPointerOver={(e) => {
         e.stopPropagation();
@@ -712,7 +946,7 @@ type Anchor = { id: string; x: number; y: number; z: number };
 const toWorld = (x: number, y: number, z: number): Anchor => ({ id: "", x: x - W / 2, y, z: z - D / 2 });
 
 const FIXED_ANCHORS: Anchor[] = [
-  ...Object.entries(TAGS).map(([id, [x, z]]) => ({ ...toWorld(x, 1.7, z), id: `zone:${id}` })),
+  ...Object.entries(TAGS).map(([id, [x, z]]) => ({ ...toWorld(x, id === "quiet" ? 1.7 : WALL_TALL + 0.45, z), id: `zone:${id}` })),
   { ...toWorld(1.9, 0.05, 9.2), id: "label:Reception" },
   { ...toWorld(10.0, 0.05, 4.75), id: "label:Corridor" },
   { ...toWorld(9.35, 0.05, 8.2), id: "label:Bathroom" },
@@ -780,7 +1014,8 @@ function seatAnchor(seatId: string): Anchor | null {
 
 /** Building-space rect to a world-space box (the model is centred on the origin). */
 function boxFor([x0, z0, x1, z1]: Rect) {
-  return new THREE.Box3(new THREE.Vector3(x0 - W / 2, 0, z0 - D / 2), new THREE.Vector3(x1 - W / 2, 1.2, z1 - D / 2));
+  // Tall enough to include the name tags floating above the back wall
+  return new THREE.Box3(new THREE.Vector3(x0 - W / 2, 0, z0 - D / 2), new THREE.Vector3(x1 - W / 2, WALL_TALL + 0.8, z1 - D / 2));
 }
 
 /**
@@ -815,29 +1050,54 @@ const START = { azimuth: 0, polar: 0.88 };
 function CameraRig({
   controls,
   focus,
-  touch,
   calm,
 }: {
   controls: React.RefObject<CameraControlsImpl | null>;
   focus: FocusId;
-  touch: boolean;
   calm: boolean;
 }) {
   const invalidate = useThree((s) => s.invalidate);
   const camera = useThree((s) => s.camera);
+  const gl = useThree((s) => s.gl);
+  const connected = useThree((s) => s.events.connected) as HTMLElement | undefined;
   const first = useRef(true);
+
+  // camera-controls claims every touch on the canvas (touch-action: none), which
+  // traps the page. Hand one-finger vertical swipes back to the browser so the
+  // page scrolls, and stop two-finger moves scrolling it so they pinch and pan
+  // the model instead. Sideways one-finger swipes turn the model.
+  // On laptops, a trackpad pinch (a wheel event with ctrlKey) zooms; a plain
+  // wheel still scrolls the page.
+  useEffect(() => {
+    const el = connected ?? gl.domElement;
+    el.style.setProperty("touch-action", "pan-y");
+    const keepTwoFingers = (e: TouchEvent) => {
+      if (e.touches.length > 1) e.preventDefault();
+    };
+    const trackpadPinch = (e: WheelEvent) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      void controls.current?.dolly(-e.deltaY * 0.05, false);
+    };
+    el.addEventListener("touchmove", keepTwoFingers, { passive: false });
+    el.addEventListener("wheel", trackpadPinch, { passive: false });
+    return () => {
+      el.removeEventListener("touchmove", keepTwoFingers);
+      el.removeEventListener("wheel", trackpadPinch);
+    };
+  }, [connected, gl, controls]);
 
   useEffect(() => {
     const c = controls.current;
     if (!c || !(camera instanceof THREE.PerspectiveCamera)) return;
     const animate = !first.current && !calm;
-    const azimuth = first.current ? START.azimuth : c.azimuthAngle;
+    const azimuth = first.current && focus === "all" ? START.azimuth : FOCUS[focus].azimuth;
     const polar = first.current ? START.polar : c.polarAngle;
     first.current = false;
 
     const { center, toCamera, distance } = fitDistance(boxFor(FOCUS[focus].rect), azimuth, polar, camera);
-    // A little extra room at the top for the room shortcuts and name tags
-    const d = distance * 1.1;
+    // A little extra room for the room shortcuts across the top
+    const d = distance * 1.15;
     void c.setLookAt(
       center.x + toCamera.x * d,
       center.y + toCamera.y * d,
@@ -855,15 +1115,13 @@ function CameraRig({
     <CameraControls
       ref={controls}
       makeDefault
-      // On touch screens the page must keep scrolling: no drag gestures, use the buttons instead.
-      enabled={!touch}
       minPolarAngle={0.2}
       maxPolarAngle={1.3}
       minDistance={3}
       maxDistance={40}
       smoothTime={0.35}
       mouseButtons={{ left: A.ROTATE, middle: A.DOLLY, right: A.TRUCK, wheel: A.NONE }}
-      touches={{ one: A.NONE, two: A.NONE, three: A.NONE }}
+      touches={{ one: A.TOUCH_ROTATE, two: A.TOUCH_DOLLY_TRUCK, three: A.TOUCH_TRUCK }}
     />
   );
 }
@@ -892,6 +1150,12 @@ export default function Building3D(props: Props) {
   const [focus, setFocus] = useState<FocusId>(narrow ? "main" : "all");
   const controls = useRef<CameraControlsImpl | null>(null);
   const [hoverSeat, setHoverSeat] = useState<string | null>(null);
+  const [gestureHint, setGestureHint] = useState(touch);
+  useEffect(() => {
+    if (!gestureHint) return;
+    const t = setTimeout(() => setGestureHint(false), 7000);
+    return () => clearTimeout(t);
+  }, [gestureHint]);
   const labelEls = useRef(new Map<string, HTMLElement>());
   const tip = hoverSeat ? seatAnchor(hoverSeat) : null;
   const anchors = useMemo(() => (tip ? [...FIXED_ANCHORS, tip] : FIXED_ANCHORS), [tip]);
@@ -934,7 +1198,7 @@ export default function Building3D(props: Props) {
           shadow-camera-near={1}
           shadow-camera-far={45}
         />
-        <directionalLight position={[9, 8, -6]} intensity={0.45} color="#c9d6ff" />
+        <directionalLight position={[9, 8, -6]} intensity={0.75} color="#c9d6ff" />
 
         <group position={[-W / 2, 0, -D / 2]}>
           {/* Plinth the model stands on */}
@@ -951,7 +1215,7 @@ export default function Building3D(props: Props) {
         </group>
 
         <Projector anchors={anchors} els={labelEls} />
-        <CameraRig controls={controls} focus={focus} touch={touch} calm={calm} />
+        <CameraRig controls={controls} focus={focus} calm={calm} />
       </Canvas>
 
       {/* Labels, positioned by <Projector> each frame */}
@@ -982,6 +1246,14 @@ export default function Building3D(props: Props) {
           </div>
         ) : null}
       </div>
+
+      {gestureHint ? (
+        <div className="pointer-events-none absolute inset-x-3 top-14 flex justify-center">
+          <p className="rounded-full border border-white/15 bg-ink-950/85 px-3 py-1.5 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-ink-200 backdrop-blur-md">
+            Pinch to zoom · two fingers to move · swipe sideways to turn
+          </p>
+        </div>
+      ) : null}
 
       {/* Room shortcuts */}
       <div className="scrollbar-none absolute inset-x-0 top-0 flex gap-1.5 overflow-x-auto p-3">
