@@ -13,14 +13,17 @@ type Plan = {
   badge?: string;
   features: string[];
   highlight?: boolean;
+  /** Can be bought on the booking floor plan above, rather than arranged on a tour. */
+  online?: boolean;
 };
 
 const flexible: Plan[] = [
   {
     name: "Hot desk",
     blurb: "Shared floor, first come first served",
-    price: "₦2,000",
+    price: "₦3,000",
     unit: "/ day",
+    online: true,
     features: [
       "Any open desk on the shared floor",
       "Gigabit fibre and backup power",
@@ -33,7 +36,8 @@ const flexible: Plan[] = [
     blurb: "Seven days on the shared floor",
     price: "₦10,000",
     unit: "/ week",
-    badge: "Save 30%",
+    badge: "Save ₦11,000",
+    online: true,
     features: [
       "Everything in the day pass",
       "Seven consecutive days",
@@ -46,6 +50,7 @@ const flexible: Plan[] = [
     blurb: "A room with a door that closes",
     price: "₦6,000",
     unit: "/ day",
+    online: true,
     features: [
       "Private office for the day",
       "Seats up to four",
@@ -58,6 +63,7 @@ const flexible: Plan[] = [
     blurb: "The same room, all week",
     price: "₦42,000",
     unit: "/ week",
+    online: true,
     badge: "Best value",
     features: [
       "Everything in the private day",
@@ -69,6 +75,19 @@ const flexible: Plan[] = [
 ];
 
 const monthly: Plan[] = [
+  {
+    name: "Hot desk month",
+    blurb: "The shared floor, every day for a month",
+    price: "₦20,000",
+    unit: "/ month",
+    online: true,
+    features: [
+      "Pick your seat online for the whole month",
+      "Main floor or the quiet room",
+      "Gigabit fibre and backup power",
+      "Coffee and refreshments",
+    ],
+  },
   {
     name: "Business hours",
     blurb: "9am – 6pm, Monday to Friday",
@@ -102,7 +121,7 @@ const monthly: Plan[] = [
 
 const tabs = [
   { id: "flexible", label: "Day & week", plans: flexible, columns: "lg:grid-cols-4" },
-  { id: "monthly", label: "Monthly", plans: monthly, columns: "lg:grid-cols-2 lg:max-w-4xl lg:mx-auto" },
+  { id: "monthly", label: "Monthly", plans: monthly, columns: "lg:grid-cols-3" },
 ] as const;
 
 function Check() {
@@ -207,20 +226,20 @@ export default function Pricing() {
             </ul>
 
             <Button
-              href="/tour"
+              href={plan.online ? "#book" : "/tour"}
               variant={plan.highlight ? "primary" : "secondary"}
               size="md"
               className="mt-7 w-full"
             >
-              Get started
+              {plan.online ? "Book online" : "Get started"}
             </Button>
           </div>
         ))}
       </div>
 
       <p className="mt-8 text-center text-sm text-ink-400">
-        All prices in naira, inclusive of VAT. Day passes can be bought at the front desk —
-        no membership required.
+        All prices in naira, inclusive of VAT. Hot desk and private office passes can be
+        booked online above or bought at the front desk — no membership required.
       </p>
     </div>
   );

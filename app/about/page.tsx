@@ -165,7 +165,7 @@ export default function AboutPage() {
                   Come and judge it from a chair
                 </h2>
                 <p className="mx-auto mt-5 max-w-lg text-ink-300">
-                  A day pass costs ₦2,000 and tells you more than any tour. Ask us the awkward
+                  A day pass costs ₦3,000 and tells you more than any tour. Ask us the awkward
                   questions while you&apos;re here.
                 </p>
                 <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
